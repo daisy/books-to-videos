@@ -9,5 +9,6 @@
     "maxHeight": 4000,
     "includePageNumbers": false,
     "chapters": [],
-    "stylesheet": "default.css"
+    "stylesheet": "default.css",
+    "vttSettings": ""
 }

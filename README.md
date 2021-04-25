@@ -87,7 +87,7 @@ These are the default options:
     "includePageNumbers": false,
     "chapters": [],
     "stylesheet": "default.css",
-    "captionsSettings": ""
+    "vttSettings": ""
 }
 ```
 
@@ -98,7 +98,7 @@ Customize any options by creating a custom options file, e.g.
 ```
 {
     "stylesheet": "vertical.css",
-    "captionsSettings": "vertical:rl"
+    "vttSettings": "vertical:rl"
 }
 ```
 
