@@ -1,0 +1,8 @@
+out
+node_modules
+.env
+build
+.vscode
+extra-settings
+start.sh
+.DS_Store

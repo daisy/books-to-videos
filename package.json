@@ -1,0 +1,58 @@
+{
+    "name": "books-to-videos",
+    "version": "0.1.0",
+    "description": "Transform a synchronized text and audio book into a video presentation",
+    "keywords": [
+        "accessibility",
+        "DAISY",
+        "video",
+        "ebook"
+    ],
+    "author": "marisa.demeglio@gmail.com",
+    "license": "ISC",
+    "type": "module",
+    "workspaces": [
+        "packages/*"
+    ],
+    "scripts": {
+        "build": "npm run clean && npm run compile && npm run copy-defaults",
+        "clean": "rimraf -rf ./build",
+        "compile": "tsc",
+        "start": "node --experimental-specifier-resolution=node build/cli/index.js",
+        "copy-defaults": "cpy src/cli/defaults build/cli/defaults"
+    },
+    "compilerOptions": {
+        "types": [
+            "node",
+            "jsdom"
+        ]
+    },
+    "dependencies": {
+        "@ffmpeg-installer/ffmpeg": "^1.0.20",
+        "@ffprobe-installer/ffprobe": "^1.1.0",
+        "chardet": "^1.3.0",
+        "commander": "^7.2.0",
+        "dayjs": "^1.10.4",
+        "filenamify": "^4.2.0",
+        "fluent-ffmpeg": "^2.1.2",
+        "fs-extra": "^9.1.0",
+        "iconv-lite": "^0.4.24",
+        "logform": "^2.2.0",
+        "mime-types": "^2.1.30",
+        "nanoid": "^3.1.22",
+        "puppeteer": "^8.0.0",
+        "tmp": "^0.2.1",
+        "vtt-creator": "^1.1.1",
+        "winston": "^3.3.3",
+        "xmldom": "^0.6.0",
+        "xpath": "^0.0.32"
+    },
+    "devDependencies": {
+        "@types/commander": "^2.12.2",
+        "@types/jsdom": "^16.2.10",
+        "@types/node": "^14.14.41",
+        "@types/xmldom": "^0.1.30",
+        "cpy-cli": "^3.1.1",
+        "typescript": "^4.2.4"
+    }
+}

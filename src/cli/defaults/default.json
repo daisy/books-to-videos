@@ -1,0 +1,13 @@
+{
+    "autosizeFont": true,
+    "previewMode": false,
+    "numPreviewSlides": -1,
+    "quiet": false,
+    "debug": false,
+    "verbose": true,
+    "maxWidth": 4000,
+    "maxHeight": 4000,
+    "includePageNumbers": false,
+    "chapters": [],
+    "stylesheet": "default.css"
+}
