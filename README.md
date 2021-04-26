@@ -14,13 +14,13 @@ TODO: instructions for installation once package is published
 
 ## Usage
 
-Running this command:
+This command:
 
 ```
 npm run start -- convert /path/to/ncc.html /path/to/outputDirectory
 ```
 
-Will create this output in `outputDirectory`:
+Will create these files in `outputDirectory`:
 
 * Video file (MP4) of the DAISY 2.02 book
 * Video captions (VTT)
@@ -62,18 +62,37 @@ The [default](https://github.com/daisy/books-to-videos/blob/main/src/cli/default
 
 Some options can be configured via the command line. They are:
 
-* `-c, --chapters`: If you don't want to convert the entire book, you may specify which chapters to convert. E.g. `--chapters 1 2 3`
-* `-d, --debug`: Turn debug mode on
-* `-e, --encoding`: Force a character encoding. E.g. `--encoding Shift_JIS`
+* `-c, --chapters`: List of numbers, e.g. `--chapters 1 2 3`. Use this option to [convert part of a book](#convert-part-of-a-book) 
+* `-d, --debug`: Run in [debug mode](#debugging)
+* `-e, --encoding`: Force a character [encoding](#set-encoding)
 * `-h, --help`: Show help
-* `-o, --options`: Custom options file. E.g. `--options my-settings.json`
-* `-s, --stylesheet`: Custom CSS file. E.g. `--stylesheet my-style.css`
+* `-o, --options`: Custom options file. E.g. `--options my-options.json`
+* `-s, --stylesheet`: CSS file used for the [video style](#video-style). E.g. `--stylesheet my-style.css`
 * `-v, --verbose`: Turn verbose output on.
-* `-z, --vttSettings`: Settings to append after each caption, e.g. `--vttSettings align:middle position:60% vertical:rl` 
+* `-z, --vttSettings`: Specify [caption settings](#caption-settings)
+
+Options on the command line override options in a file.
 
 ## Options file
 
-These are all the options, with their default values:
+All the options can be set via an options file (JSON format). The options are:
+
+| Option | Allowed values | Description |
+|--------|----------------|-------------|
+| __autosizeFont__ | `true`/`false` | Automatically determine the largest possible font size to use |
+| __chapters__ | An array e.g. `[1, 2, 3]` | If you don't want to convert the entire book, you may [convert part of a book](#convert-part-of-a-book) by specifying which chapters to include. If this value is empty (_`[]`_), the video will be created from the whole book.
+| __debug__ | |Run in [debug mode](#debugging)|
+| __includePageNumbers__ | `true`/`false` | Whether video output should include page numbers
+| __maxHeight__ | Number of pixels | Maximum Chromium viewport height. There's no need to change this option. Edit the CSS for the `booksToVideos-container` class to change the video dimensions.
+| __maxWidth__ | Number of pixels | Maximum Chromium viewport width. There's no need to change this option. Edit the CSS for the `booksToVideos-container` class to change the video dimensions.
+| __numPreviewSlides__ | Number of slides, or `-1` | How many slides to create when running in `previewMode`. To create all possible slides, set this option to `-1`.
+| __previewMode__ | `true`/`false` | Create an HTML page with a list of slides instead of creating a video. Good for testing out styles; faster than making a video.
+| __quiet__ | `true`/`false` | Don't output anything on the command line
+| __stylesheet__ | Filename | CSS file used for the [video style](#video-style)
+| __verbose__ | `true`/`false` | Include extra information in the command line output
+| __vttSettings__ | String | Specify [caption settings](#caption-settings)
+
+### Default options 
 
 ```
 {
@@ -92,25 +111,11 @@ These are all the options, with their default values:
 }
 ```
 
-Each setting is defined below:
-
-* __autosizeFont__: Automatically determine the largest possible font size to use.
-* __chapters__: Specify which chapters to include in the video. If empty (_[]_), create a video from the whole book.
-* __debug__: Run in [debug mode](#debugging)
-* __includePageNumbers__: Whether video output should include page numbers
-* __maxHeight__: maximum Chromium viewport height. There's no need to change this option. Edit the CSS for the `booksToVideos-container` class to change the video dimensions.
-* __maxWidth__: maximum Chromium viewport width. There's no need to change this option. Edit the CSS for the `booksToVideos-container` class to change the video dimensions.
-* __numPreviewSlides__: How many slides to create when running in `previewMode`. `-1` means create all.
-* __previewMode__: Create an HTML page with a list of slides instead of creating a video. Good for testing out styles; faster than making a video.
-* __quiet__: Don't output anything on the command line
-* __stylesheet__: Apply this stylesheet to the slides
-* __verbose__: Include extra information in the command line output
-* __vttSettings__: Specify [caption settings](#caption-settings)
 
 ### Custom options file
 
 Customize any options by creating a custom options file, e.g. 
-
+`my-options.json`:
 ```
 {
     "stylesheet": "vertical.css",
@@ -120,9 +125,33 @@ Customize any options by creating a custom options file, e.g.
 
 It does not have to include entries for every option, just the ones you want to customize.
 
-Note that some options can be customized on the command line, but not all.
+Then pass the custom options file on the command line:
+```
+npm run start -- convert /path/to/ncc.html /path/to/outputDirectory --options /path/to/my-options.json
+```
 
 ## Tips
+
+### Convert part of a book
+
+If you are just converting part of a book, you can use the numbers to say which chapters you want to convert:
+
+```
+npm run start -- convert /path/to/book/ncc.html /path/to/outputDirectory --chapters 2 3
+```
+
+To get the chapter numbers, use the `list-chapters` command:
+
+```
+npm run start -- list-chapters /path/to/ncc.html
+
+1. First chapter
+2. Second chapter
+3. Third chapter
+
+```
+
+Note that when processing selected chapters intead of the whole book, the fontsize will be optimized for those chapters. It may be different when the whole book is processed.
 
 ### Set encoding
 
@@ -157,24 +186,6 @@ WEBVTT
 ...
 ```
 
-### `list-chapters` command
-
-There is also a command included to view a list of chapters in the book. This can be helpful for referring to the chapters by number. For example:
-
-```
-npm run start -- list-chapters /path/to/ncc.html
-
-1. First chapter
-2. Second chapter
-3. Third chapter
-
-```
-
-and then if you are just converting part of a book, you can use the numbers to say which chapters you want to convert:
-
-```
-npm run start -- convert /path/to/book/ncc.html /path/to/outputDirectory --chapters 2 3
-```
 
 ### Debugging
 
