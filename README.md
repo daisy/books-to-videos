@@ -6,21 +6,21 @@ Currently supports DAISY 2.02 to MP4 video with CSS customization.
 
 Tested scripts: Latin, Japanese (Shift_JIS) with vertical writing, Arabic
 
+See [sample output](https://d2v.netlify.app/)
+
 ## Installation
 
-* Install [NPM](https://www.npmjs.com/get-npm)
-* Clone this repository
-* `npm i`
+TODO: instructions for installation once package is published
 
 ## Usage
 
 Running this command:
 
 ```
-npm run start -- convert /path/to/book/ncc.html ../outputDirectory
+npm run start -- convert /path/to/ncc.html /path/to/outputDirectory
 ```
 
-Will create this output in `../outputDirectory`:
+Will create this output in `outputDirectory`:
 
 * Video file (MP4) of the DAISY 2.02 book
 * Video captions (VTT)
@@ -31,7 +31,7 @@ There are many ways to customize the output. Read on to learn more.
 
 ## Video style
 
-The text shown in the video can be customized by creating a stylesheet in CSS. In the stylesheet itself, use the class `booksToVideos-container` for the whole video "container" and `booksToVideos-text` for the text portion. E.g.
+The text shown in the video can be customized by creating a stylesheet in CSS. In the stylesheet itself, use the classes `booksToVideos-container` for the whole video "container" and `booksToVideos-text` for the text portion. E.g.
 
 ```
 .booksToVideos-container {    
@@ -69,6 +69,7 @@ Some options can be configured via the command line. They are:
 * `-o, --options`: Custom options file. E.g. `--options my-settings.json`
 * `-s, --stylesheet`: Custom CSS file. E.g. `--stylesheet my-style.css`
 * `-v, --verbose`: Turn verbose output on.
+* `-z, --vttSettings`: Settings to append after each caption, e.g. `--vttSettings align:middle position:60% vertical:rl` 
 
 ## Options file
 
@@ -98,7 +99,7 @@ Customize any options by creating a custom options file, e.g.
 ```
 {
     "stylesheet": "vertical.css",
-    "vttSettings": "vertical:rl"
+    "vttSettings": "align:middle position:60% vertical:rl"
 }
 ```
 
@@ -121,7 +122,7 @@ There is an option called `vttSettings` which contains settings to use with ever
 There is also a command included to view a list of chapters in the book. This can be helpful for referring to the chapters by number. For example:
 
 ```
-npm run start -- list-chapters /path/to/book/ncc.html
+npm run start -- list-chapters /path/to/ncc.html
 
 1. First chapter
 2. Second chapter
@@ -132,7 +133,7 @@ npm run start -- list-chapters /path/to/book/ncc.html
 and then if you are just converting part of a book, you can use the numbers to say which chapters you want to convert:
 
 ```
-npm run start -- convert /path/to/book/ncc.html ../outputDirectory --chapters 2 3
+npm run start -- convert /path/to/book/ncc.html /path/to/outputDirectory --chapters 2 3
 ```
 
 ## TODOs
