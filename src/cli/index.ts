@@ -30,7 +30,7 @@ async function main() {
         .option('-c, --chapters <numbers...>', "Only include these chapters, e.g. 1 2 3")
         .option('-s, --stylesheet <file>', "Stylesheet")
         .option('-e, --encoding <encoding>', "Set the character encoding")
-        .option('-v, --vttSettings <settings>', "Settings to add after every caption, e.g. vertical:rl")
+        .option('-z, --vttSettings <settings>', "Settings to add after every caption, e.g. vertical:rl")
         // "options" below are CLI "options" not types.Options
         .action(async (input, output, options) => {
             await convert(input, output, options);
