@@ -73,26 +73,41 @@ Some options can be configured via the command line. They are:
 
 ## Options file
 
-These are the default options:
+These are all the options, with their default values:
 
 ```
 {
     "autosizeFont": true,
-    "previewMode": false,
-    "numPreviewSlides": -1,
-    "quiet": false,
-    "debug": false,
-    "verbose": true,
-    "maxWidth": 4000,
-    "maxHeight": 4000,
-    "includePageNumbers": false,
     "chapters": [],
+    "debug": false,
+    "includePageNumbers": false,
+    "maxHeight": 4000,
+    "maxWidth": 4000,
+    "numPreviewSlides": -1,
+    "previewMode": false,
+    "quiet": false,
     "stylesheet": "default.css",
+    "verbose": true,
     "vttSettings": ""
 }
 ```
 
-### Advanced: Custom options file
+Each setting is defined below:
+
+* __autosizeFont__: Automatically determine the largest possible font size to use.
+* __chapters__: Specify which chapters to include in the video. If empty (_[]_), create a video from the whole book.
+* __debug__: Run in [debug mode](#debugging)
+* __includePageNumbers__: Whether video output should include page numbers
+* __maxHeight__: maximum Chromium viewport height. There's no need to change this option. Edit the CSS for the `booksToVideos-container` class to change the video dimensions.
+* __maxWidth__: maximum Chromium viewport width. There's no need to change this option. Edit the CSS for the `booksToVideos-container` class to change the video dimensions.
+* __numPreviewSlides__: How many slides to create when running in `previewMode`. `-1` means create all.
+* __previewMode__: Create an HTML page with a list of slides instead of creating a video. Good for testing out styles; faster than making a video.
+* __quiet__: Don't output anything on the command line
+* __stylesheet__: Apply this stylesheet to the slides
+* __verbose__: Include extra information in the command line output
+* __vttSettings__: Specify [caption settings](#caption-settings)
+
+### Custom options file
 
 Customize any options by creating a custom options file, e.g. 
 
@@ -113,9 +128,34 @@ Note that some options can be customized on the command line, but not all.
 
 While Books-to-Videos will attempt to detect the encoding, in some cases if it is not reliably found, you may specify it with the `--encoding` option. One encoding may be specified for an entire publication.
 
-### VTT settings
+### Caption settings
 
-There is an option called `vttSettings` which contains settings to use with every caption. This option can be used to control the position of captions and to create vertical captions. Note that there is just one setting and it will apply to all captions. Finer-grained control may be introduced in future versions if there is interest. 
+Books-to-Videos creates a VTT captions file to accompany the video. The option `--vttSettings` contains settings to apply to every caption. This can be used to control the position of captions and to create vertical captions. Note that there is just one setting and it will apply to all captions. Finer-grained control for per-caption settings may be introduced in future versions if there is interest.
+
+E.g. 
+
+```
+npm run start -- convert /path/to/ncc.html /path/to/outputDirectory --vttSettings "align:middle position:60% vertical:rl"
+```
+
+Results in this type of captions file:
+```
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:02.666 align:middle position:60% vertical:rl
+ごん狐
+
+2
+00:00:02.666 --> 00:00:04.713 align:middle position:60% vertical:rl
+新美南吉
+
+3
+00:00:04.713 --> 00:00:06.343 align:middle position:60% vertical:rl
+一
+
+...
+```
 
 ### `list-chapters` command
 
@@ -136,11 +176,17 @@ and then if you are just converting part of a book, you can use the numbers to s
 npm run start -- convert /path/to/book/ncc.html /path/to/outputDirectory --chapters 2 3
 ```
 
-## TODOs
+### Debugging
 
-* write tests
-    * parser
-    * intermediate steps
-    * final video duration
-    * test smil parser with missing clip-begin, clip-end
-* feat: add metadata to video clip
+Use the `--debug` option to collect more details about program execution. The `--debug` option will:
+
+* Save a JSON model of the book to disk
+* Copy the following temp files to the output directory, in a `debug` subdirectory:
+    * Images of each slide
+    * Video clips of each slide
+* Include an HTML page for each slide, in a `debug/html` subdirectory. This is useful for testing different CSS approaches.
+
+Note that the `--debug` option will show Chromium running and may ask you to allow incoming network connections. 
+
+Also note that the `--debug` option may not provide the best images, so it's only recommended to use for troubleshooting, not for the final result.
+
