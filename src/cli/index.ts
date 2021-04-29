@@ -99,7 +99,11 @@ async function showChapterList(input: string) {
         process.exit(1);
     }
     let book = await parseDaisy202(inputFilename, options);
-    let chaptersList = book.chapters.map((chapter, idx) => `${idx + 1}. ${chapter.title}`);
+    let chaptersList = book.chapters.map((chapter, idx) => {
+        let dur = chapter.contents.reduce((acc, curr) => acc+=curr.dur, 0);
+        return `${(idx + 1).toString().padEnd(15, '.')}${chapter.title.padEnd(45, '.')}Duration: ${utils.toHHMMSS(dur)}`;
+    });
+
     winston.info(JSON.stringify(chaptersList, null, 2));
 }
 
