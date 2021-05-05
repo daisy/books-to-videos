@@ -54,7 +54,7 @@ function parseChapters(doc): Array<types.Chapter> {
                 url = url[0];
                 let chapterInfo: types.Chapter = {
                     // @ts-ignore
-                    title: childElm.textContent,
+                    title: childElm.textContent.trim(),
                     // @ts-ignore
                     url: url.value,
                     // @ts-ignore
@@ -86,7 +86,7 @@ function parseMetadata(doc): types.Metadata {
     let title = select('//html:meta[@name="dc:title"]/@content', doc);
     if (title.length > 0) {
         //@ts-ignore
-        title = title[0].value;
+        title = title[0].value.trim();
     }
     let lang = select('//html:meta[@name="dc:language"]/@content', doc);
     if (lang.length > 0) {
@@ -103,17 +103,17 @@ function parseMetadata(doc): types.Metadata {
     let dateScheme = '';
     if (date) {
         // @ts-ignore
-        dateContent = date.getAttribute("content");
+        dateContent = date.getAttribute("content").trim();
         // @ts-ignore
-        dateScheme = date.getAttribute("scheme");
+        dateScheme = date.getAttribute("scheme").trim();
     }
     return {
         title: title.toString(),
         // @ts-ignore
-        authors: authors.map(aut => aut.value),
+        authors: authors.map(aut => aut.value.trim()),
         date: new Date(dateContent),
         dateScheme,
-        lang: lang.toString()
+        lang: lang.toString().trim()
     };
 }
 export { parse };
