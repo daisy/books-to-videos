@@ -14,7 +14,7 @@ async function generateCaptions(book:types.Book, options:types.Options, outDirna
 
     allMediaSegments.map(mediaSegment => {
         let text = mediaSegment.html.textContent;
-        text = text.replace("\n", "").replace("\t", "").replace("    ", "").trim();
+        text = text.replace(/\n/g, "").replace(/\t/g, "").replace(/\s\s\s\s/g, "").trim();
         v.add(startTime, startTime + mediaSegment.durOnDisk, text, options.vttSettings ?? "");
         startTime += mediaSegment.durOnDisk;
     });
