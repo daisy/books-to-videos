@@ -5,6 +5,7 @@ import xpath from 'xpath';
 import * as types from "../../types";
 import * as utils from '../../utils';
 import iconv from 'iconv-lite';
+import { replaceEntities } from '../entities';
 
 // parse an NCC file
 async function parse(filename:string, options:types.Options): Promise<types.Book> {
@@ -13,6 +14,7 @@ async function parse(filename:string, options:types.Options): Promise<types.Book
     let encoding = options.encoding ?? utils.sniffEncoding(filename);
     let fileContents = await fs.readFile(filename);
     fileContents = iconv.decode(fileContents, encoding);
+    fileContents = replaceEntities(fileContents);
     
     let doc = new DOMParser().parseFromString(fileContents);
     

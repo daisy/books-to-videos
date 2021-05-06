@@ -7,6 +7,8 @@ import xpath from 'xpath';
 import * as utils from '../../utils';
 import * as types from '../../types';
 import iconv from 'iconv-lite';
+import { replaceEntities } from '../entities';
+import getUrls from 'get-urls';
 
 // get information about the HTML elements in the book
 // only targets the subset of media segments being processed (e.g. if the user has only requested to work with certain chapters)
@@ -38,6 +40,7 @@ async function analyzeHtmlElements(filename: string, segments: Array<types.Media
     let encoding = options.encoding ?? utils.sniffEncoding(filename);
     let fileContents = await fs.readFile(filename);
     fileContents = iconv.decode(fileContents, encoding);
+    fileContents = replaceEntities(fileContents);
     
     let doc = new DOMParser().parseFromString(fileContents);
     const select = xpath.useNamespaces({
@@ -61,6 +64,7 @@ async function analyzeHtmlElements(filename: string, segments: Array<types.Media
             // @ts-ignore
             let textContent = tagname == "img" ? element.getAttribute("alt") : element.textContent;
 
+            let textHasUrls = getUrls(textContent).size > 0;
             let elementInfo = {
                 // @ts-ignore
                 rawHtml: xmlserializer.serializeToString(element), 
@@ -69,7 +73,8 @@ async function analyzeHtmlElements(filename: string, segments: Array<types.Media
                 textContent,
                 media,
                 tagname,
-                encoding
+                encoding,
+                textHasUrls
             };
 
             // encode media in data uri
