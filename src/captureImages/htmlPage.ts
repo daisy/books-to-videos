@@ -19,11 +19,7 @@ function createHtmlPage(segmentHtml: types.Html, stylesheet: string, fontsizeOve
         <body>
             <div class="booksToVideos-container" lang="${segmentHtml.lang}" dir="${segmentHtml.dir}">
                 <div class="booksToVideos-text ${segmentHtml.textHasUrls ? `url` : ''}">
-                ${segmentHtml.tagname === "img" ? 
-                `<p>${segmentHtml.textContent}</p>`
-                :
-                segmentHtml.rawHtml
-                }
+                ${segmentHtml.rawHtml}
                 </div>
             </div>
         </body>

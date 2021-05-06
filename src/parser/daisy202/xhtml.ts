@@ -60,10 +60,9 @@ async function analyzeHtmlElements(filename: string, segments: Array<types.Media
             // @ts-ignore
             let tagname = element.tagName;
             // @ts-ignore
-            let media = tagname == "img" ? element.getAttribute("src") : null;
-            // @ts-ignore
             let textContent = tagname == "img" ? element.getAttribute("alt") : element.textContent;
 
+            await resolveMedia(element, filename);
             let textHasUrls = getUrls(textContent).size > 0;
             let elementInfo = {
                 // @ts-ignore
@@ -71,23 +70,10 @@ async function analyzeHtmlElements(filename: string, segments: Array<types.Media
                 lang,
                 dir,
                 textContent,
-                media,
                 tagname,
                 encoding,
                 textHasUrls
             };
-
-            // encode media in data uri
-            // because puppeteer won't load local resources
-            if (elementInfo.media) {
-                let mediaFilepath = new URL(elementInfo.media, "file://" + filename).href;
-                mediaFilepath = mediaFilepath.replace("file://", "");
-                let mimetype = mime.lookup(path.extname(mediaFilepath));
-                let encoding = 'base64'; 
-                let data = await fs.readFile(mediaFilepath).toString(encoding); 
-                elementInfo.media = 'data:' + mimetype + ';' + encoding + ',' + data; 
-            }
-            
             segment.html = {...segment.html, ...elementInfo};
         }
         else {
@@ -124,4 +110,33 @@ function getAttributeSearchParents (elm, attributeName) {
     }
 }
 
+// modify the xml element and resolve its image srcs to data: strings
+async function resolveMedia(elm:any, baseUrl: string):Promise<any> {
+    if (!elm) {
+        return;
+    }
+    if (elm.nodeType != elm.ELEMENT_NODE) {
+        return;
+    }
+    if (elm.tagName == "img") {
+        let src = elm.getAttribute("src");
+        let mediaFilepath = new URL(src, "file://" + baseUrl).href;
+        mediaFilepath = mediaFilepath.replace("file://", "");
+        let mimetype = mime.lookup(path.extname(mediaFilepath));
+        let encoding = 'base64'; 
+        let data = await fs.readFile(mediaFilepath);
+        data = data.toString(encoding); 
+        data = 'data:' + mimetype + ';' + encoding + ',' + data; 
+        elm.setAttribute("src", data);
+    }
+    else {
+        for (let child of Array.from(elm.childNodes)) {
+            // @ts-ignore
+            if (child.nodeType == elm.ELEMENT_NODE) {
+                await resolveMedia(child, baseUrl);
+            }
+            
+        }
+    }
+}
 export { parse };

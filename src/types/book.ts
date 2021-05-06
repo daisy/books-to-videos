@@ -20,7 +20,6 @@ type Html = {
     src: string,
     selector: string,
     rawHtml?: string,
-    media?: string,
     lang?: string,
     dir?: string,
     textContent?: string,
