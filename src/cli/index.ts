@@ -31,6 +31,7 @@ async function main() {
         .option('-s, --stylesheet <file>', "Stylesheet")
         .option('-e, --encoding <encoding>', "Set the character encoding")
         .option('-z, --vttSettings <settings>', "Settings to add after every caption, e.g. vertical:rl")
+        .option('-p, --previewMode', "Only generate still images as a preview of the final output")
         // "options" below are CLI "options" not types.Options
         .action(async (input, output, options) => {
             await convert(input, output, options);
@@ -70,6 +71,9 @@ async function convert(input: string, output: string, cliArgs) {
     }
     if (cliArgs.vttSettings) {
         options.vttSettings = cliArgs.vttSettings;
+    }
+    if (cliArgs.previewMode) {
+        options.previewMode = cliArgs.previewMode;
     }
     let logDirname = path.resolve(outputDirname, "logs-temp");
     utils.ensureDirectory(logDirname);
