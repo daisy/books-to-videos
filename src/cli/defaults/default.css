@@ -79,3 +79,8 @@ a, a:visited {
     text-decoration: inherit;
     color: inherit;
 }
+
+/* URLs can be very long, so break them mid-word */
+.url {
+    word-break: break-all;
+}

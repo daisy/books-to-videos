@@ -29,7 +29,8 @@ type Html = {
     renderedFontsize?: number,
     width?: string,
     height?: string,
-    encoding?: string
+    encoding?: string,
+    textHasUrls?: boolean
 };
 
 type MediaSegment = {
