@@ -67,7 +67,8 @@ table {
     color: #44454c;
     text-align: center;
     line-height: 2;
-    font-size: 150px;
+    /* if autosizeFont is set to false in the books-to-videos options file, then this value gets used */
+    font-size: 150px; 
     padding: 20px;
 }
 .booksToVideos-text img {
@@ -83,8 +84,4 @@ a, a:visited {
 /* URLs can be very long, so break them mid-word */
 .url {
     word-break: break-all;
-}
-
-.segment {
-    display: block;
 }

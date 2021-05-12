@@ -42,7 +42,7 @@ function createPreviewHtml (book: types.Book, options: types.Options) {
         <head>
             <meta charset="utf-8">
             <meta name="viewport" content="width=device-width, initial-scale=1">
-            <title>Proof sheet: ${book.metadata.title}</title>
+            <title>Preview for ${book.metadata.title}</title>
             <style>
                 body > div {
                     display: flex;
