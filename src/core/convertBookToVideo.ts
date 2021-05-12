@@ -53,6 +53,11 @@ async function convertBookToVideo(
     });
     winston.verbose(`Temp files in ${tmpDirname}`);
 
+    if (options.autosizeFont && options.fontsizePx) {
+        options.autosizeFont = false;
+        winston.info("Ignoring autosizeFont option because fontsizePx option is set");
+    }
+    
     // parse the book
     let book = await parseDaisy202(inputFilename, options);
     book.safeFilename = filenamify(book.metadata.title);

@@ -11,7 +11,8 @@ type Options = {
     quiet?: boolean,
     stylesheet?: string,
     vttSettings: string,
-    verbose?: boolean
+    verbose?: boolean,
+    fontsizePx?: number
 };
 
 export { Options };

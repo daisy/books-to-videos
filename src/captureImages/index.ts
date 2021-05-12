@@ -10,12 +10,21 @@ async function captureImages(book: types.Book, options: types.Options, tmpDirnam
     
     if (options.autosizeFont) {
         let optimalFontsize = await findOptimalFontsize(book, options);
-
+        winston.info(`Using autosized font: ${optimalFontsize}`);
         // take screenshots for all segments
         await takeScreenshots(book, options, tmpDirname, optimalFontsize);
     }
     else {
-        await takeScreenshots(book, options, tmpDirname);
+        // the fontsize may have been set manually
+        if (options.fontsizePx) {
+            winston.info(`Using fontsizePx option: ${options.fontsizePx}`);
+            await takeScreenshots(book, options, tmpDirname, options.fontsizePx);
+        }
+        // else use whatever is in the supplied CSS file
+        else {
+            winston.info(`Using CSS for fontsize`);
+            await takeScreenshots(book, options, tmpDirname);
+        }
     }
     winston.info("Done capturing images");
     return book;

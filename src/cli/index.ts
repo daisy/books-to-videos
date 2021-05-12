@@ -24,14 +24,15 @@ async function main() {
             input: "NCC file",
             output: "Output directory"
         })
-        .option('-o, --options <file>', "Options file")
-        .option('-d, --debug', "Debug mode")
-        .option('-v, --verbose', "Verbose output")
         .option('-c, --chapters <numbers...>', "Only include these chapters, e.g. 1 2 3")
-        .option('-s, --stylesheet <file>', "Stylesheet")
+        .option('-d, --debug', "Debug mode")
         .option('-e, --encoding <encoding>', "Set the character encoding")
-        .option('-z, --vttSettings <settings>', "Settings to add after every caption, e.g. vertical:rl")
+        .option('-f, --fontsizePx <number>', "Value in pixels of the desired font size. Fontsize is otherwise determined automatically.")
+        .option('-o, --options <file>', "Options file")
         .option('-p, --previewMode', "Only generate still images as a preview of the final output")
+        .option('-s, --stylesheet <file>', "Stylesheet")
+        .option('-v, --verbose', "Verbose output")
+        .option('-z, --vttSettings <settings>', "Settings to add after every caption, e.g. vertical:rl")        
         // "options" below are CLI "options" not types.Options
         .action(async (input, output, options) => {
             await convert(input, output, options);
@@ -74,6 +75,10 @@ async function convert(input: string, output: string, cliArgs) {
     }
     if (cliArgs.previewMode) {
         options.previewMode = cliArgs.previewMode;
+    }
+    if (cliArgs.fontsizePx) {
+        options.fontsizePx = cliArgs.fontsizePx;
+        options.autosizeFont = false;
     }
     let logDirname = path.resolve(outputDirname, "logs-temp");
     utils.ensureDirectory(logDirname);
