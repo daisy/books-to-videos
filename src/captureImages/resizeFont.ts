@@ -23,7 +23,6 @@ async function findOptimalFontsize(book: types.Book, options: types.Options): Pr
     await browser.close();
     let allFontsizes = allMediaSegments.map(mediaSegment => mediaSegment.html.maximumFontsize);
     let optimalFontsize = Math.min(...allFontsizes);
-    winston.verbose(`Overall optimal fontsize: ${optimalFontsize}`);
     return optimalFontsize;
 }
 

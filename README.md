@@ -65,11 +65,13 @@ Some options can be configured via the command line. They are:
 * `-c, --chapters`: List of numbers, e.g. `--chapters 1 2 3`. Use this option to [convert part of a book](#convert-part-of-a-book) 
 * `-d, --debug`: Run in [debug mode](#debugging)
 * `-e, --encoding`: Force a character [encoding](#set-encoding)
-* `-h, --help`: Show help
+* ` -f, --fontsizePx <number>`: Value in pixels of the desired font size
 * `-o, --options`: Custom options file. E.g. `--options my-options.json`
+* `-p, --previewMode`: Only generate still images as a preview of the final output
 * `-s, --stylesheet`: CSS file used for the [video style](#video-style). E.g. `--stylesheet my-style.css`
 * `-v, --verbose`: Turn verbose output on.
 * `-z, --vttSettings`: Specify [caption settings](#caption-settings)
+* `-h, --help`: Show help
 
 Options on the command line override options in a file.
 
@@ -82,7 +84,8 @@ All the options can be set via an options file (JSON format). The options are:
 | __autosizeFont__ | `true`/`false` | Automatically determine the largest possible font size to use |
 | __chapters__ | An array e.g. `[1, 2, 3]` | If you don't want to convert the entire book, you may [convert part of a book](#convert-part-of-a-book) by specifying which chapters to include. If this value is empty (_`[]`_), the video will be created from the whole book.
 | __debug__ | |Run in [debug mode](#debugging)|
-| __includePageNumbers__ | `true`/`false` | Whether video output should include page numbers
+| __includePageNumbers__ | `true`/`false` | Whether video output should include page numbers. 
+| __fontsizePx__ | Number of pixels | Force the fontsize to this value. If present, automatically overrides `autosizeFont`; therefore, this value is not present by default |
 | __maxHeight__ | Number of pixels | Maximum Chromium viewport height. There's no need to change this option. Edit the CSS for the `booksToVideos-container` class to change the video dimensions.
 | __maxWidth__ | Number of pixels | Maximum Chromium viewport width. There's no need to change this option. Edit the CSS for the `booksToVideos-container` class to change the video dimensions.
 | __numPreviewSlides__ | Number of slides, or `-1` | How many slides to create when running in `previewMode`. To create all possible slides, set this option to `-1`.
@@ -100,8 +103,8 @@ All the options can be set via an options file (JSON format). The options are:
     "chapters": [],
     "debug": false,
     "includePageNumbers": false,
-    "maxHeight": 4000,
     "maxWidth": 4000,
+    "maxHeight": 4000,
     "numPreviewSlides": -1,
     "previewMode": false,
     "quiet": false,
@@ -156,6 +159,29 @@ Note that when processing selected chapters intead of the whole book, the fontsi
 ### Set encoding
 
 While Books-to-Videos will attempt to detect the encoding, in some cases if it is not reliably found, you may specify it with the `--encoding` option. One encoding may be specified for an entire publication.
+
+### Font size options
+
+The video will use just one font size for all its contents. The font size is determined based on your options.
+
+By default, `autosizeFont` is enabled in the options JSON file. To override this, set the font size you would like instead on the command line with the `fontsizePx` option. E.g. 
+
+```
+npm run start -- convert /path/to/ncc.html outDirectory --fontsizePx 25
+```
+
+Would apply a fontsize of `25px` to the video output.
+
+Two other ways to accomplish the same result are:
+
+### Use CSS
+1. Create a custom configuration file with `autosizeFont` set to `false`
+2. Create a custom CSS file and include your desired fontsize there, under the class selector `.booksToVideos-text`
+
+### `fontsizePx` in options file
+
+1. Create a custom options JSON file with `fontsizePx` set to the value you want.
+2. Specify this custom options JSON file on the command line with the `--options` parameter
 
 ### Caption settings
 
@@ -222,4 +248,3 @@ Use the `--debug` option to collect more details about program execution. The `-
 Note that the `--debug` option will show Chromium running and may ask you to allow incoming network connections. 
 
 Also note that the `--debug` option may not provide the best images, so it's only recommended to use for troubleshooting, not for the final result.
-
