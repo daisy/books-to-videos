@@ -186,6 +186,28 @@ WEBVTT
 ...
 ```
 
+### URLs
+
+Sometimes a phrase contains a very long URL and we may wish to apply custom word wrapping rules to that type of text. Books-to-videos inserts a class "url" into the text containing URLs so that it may be styled differently. E.g. 
+
+```
+<span id="xmri_0034">https://extranet.who.int/kobe<span class="tex">_</span>centre/ja/news/COVID19<span class="tex">_</span>specialpage<span class="tex">_</span>public</span>
+```
+
+becomes
+
+```
+<span id="xmri_0034" class="url">https://extranet.who.int/kobe<span class="tex">_</span>centre/ja/news/COVID19<span class="tex">_</span>specialpage<span class="tex">_</span>public</span>
+```
+
+and then in the stylesheet, we have this default:
+
+```
+.url {
+    word-break: break-all;
+}
+```
+
 
 ### Debugging
 
