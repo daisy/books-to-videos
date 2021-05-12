@@ -1,4 +1,5 @@
-/* http://meyerweb.com/eric/tools/css/reset/ 
+
+                /* http://meyerweb.com/eric/tools/css/reset/ 
    v2.0 | 20110126
    License: none (public domain)
 */
@@ -55,29 +56,23 @@ table {
     justify-items: center;
     align-content: center;
     align-items: center;
-    
-    outline-offset: -15px;
-    outline: lightblue 15px solid;
-    background-color: black;
-
-    width: 2000px;
-    height: 2000px;
+    background: radial-gradient(#fffbec, 80%, white);
+    width: 500px;
+    height: 500px;
     
 }
 .booksToVideos-text {
-    font-family: Optima;
-    font-weight: bold;
-    color: lightblue;
+    font-family: Elena;
+    font-weight: normal;
+    color: #44454c;
     text-align: center;
-    line-height: 1.6;
+    line-height: 2;
     font-size: 150px;
-    padding: 150px;
-    /* writing-mode:tb-rl; */
+    padding: 20px;
 }
-
 .booksToVideos-text img {
-    max-height: 1600px;
-    max-width: 1600px;
+    max-height: 400px;
+    max-width: 400px;  
 }
 
 a, a:visited {
