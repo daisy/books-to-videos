@@ -15,6 +15,7 @@ async function findOptimalFontsize(book: types.Book, options: types.Options): Pr
     for (let mediaSegment of allMediaSegments) {
         let html = createHtmlPage(mediaSegment.html, stylesheet);
         let fontsize = await resizeFont(html, browserPage);
+        winston.verbose(`Max possible fontsize for ${mediaSegment.internalId}: ${fontsize}`);
         mediaSegment.html.maximumFontsize = fontsize;
     }
     
@@ -22,7 +23,7 @@ async function findOptimalFontsize(book: types.Book, options: types.Options): Pr
     await browser.close();
     let allFontsizes = allMediaSegments.map(mediaSegment => mediaSegment.html.maximumFontsize);
     let optimalFontsize = Math.min(...allFontsizes);
-    winston.verbose(`Optimal fontsize: ${optimalFontsize}`);
+    winston.verbose(`Overall optimal fontsize: ${optimalFontsize}`);
     return optimalFontsize;
 }
 
