@@ -78,6 +78,7 @@ function createPreviewHtml (book: types.Book, options: types.Options) {
             <p>Contains ${allMediaSegments.length} item(s)</p>
             <p>Each full-size image is scaled down to fit this page; click to enlarge to the original dimensions
                 of ${options.maxWidth} x ${options.maxHeight}.</p>
+            <p>${allMediaSegments.length > 0 ? `Font size at max resolution: ${allMediaSegments[0].html.renderedFontsize}px` : ``}</p>
             <div>
             ${allMediaSegments.map(mediaSegment => 
                 `<figure>
@@ -85,15 +86,14 @@ function createPreviewHtml (book: types.Book, options: types.Options) {
                         <img src="${path.basename(mediaSegment.capturedImage.src)}" alt="slide containing text">
                     </a>
                     <figcaption lang="${mediaSegment.html.lang}" dir="${mediaSegment.html.dir}">
-                        <p>Start: ${timestampAcc.toFixed(3)}s, End ${calcEnd(mediaSegment.durOnDisk).toFixed(3)}</p>
+                        <p>
+                        Start: ${timestampAcc.toFixed(3)}s, 
+                        End ${
+                            /* use dur not durOnDisk bc the latter is not available in previewMode */
+                            calcEnd(mediaSegment.dur).toFixed(3) 
+                            }
+                        </p>
                         <p>Slide text: ${mediaSegment.html.textContent.trim()}</p>
-                        ${options.autosizeFont ? 
-                            `<p>Approximate font size at this resolution: <span class="scaledFontSize" data-fontsize="${mediaSegment.html.renderedFontsize}"></span></p>
-                             <p>Font size at max resolution: ${mediaSegment.html.renderedFontsize}px</p>`
-                            : 
-                            `<p>User-configured font size (see user-supplied CSS)</p>`
-                        }
-
                         <p>Word count: ${mediaSegment.html.textContent.trim().split(' ').length}</p>
                         <p>Character count: ${mediaSegment.html.textContent.trim().length}</p>
                     </figcaption>
@@ -101,26 +101,6 @@ function createPreviewHtml (book: types.Book, options: types.Options) {
                 ).join('')}
             </div>
         </body>
-        <script>
-                document.addEventListener("DOMContentLoaded", e => {
-                    let calcRelFontSize = () => {
-                        let fontsizeSpans = Array.from(document.querySelectorAll(".scaledFontSize"));
-                        fontsizeSpans.map(elm => {
-                            let w = elm.parentElement.parentElement.parentElement.querySelector("img").width;
-                            let h = elm.parentElement.parentElement.parentElement.querySelector("img").height;
-                            let fontsize = parseInt(elm.getAttribute("data-fontsize").replace('px', ''));
-                            let ratio = h/${options.maxHeight};
-                            elm.textContent = (parseInt(ratio * fontsize))  + "px";
-                        });
-                    };
-                    window.addEventListener("resize", e => {
-                        calcRelFontSize();
-                    });
-
-                    calcRelFontSize();
-                });
-                
-        </script>
     </html>
     `;
     return previewTemplate;
