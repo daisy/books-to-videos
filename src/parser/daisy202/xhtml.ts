@@ -66,10 +66,10 @@ async function analyzeHtmlElements(filename: string, segments: Array<types.Media
             let textHasUrls = getUrls(textContent).size > 0;
             let elementInfo = {
                 // @ts-ignore
-                rawHtml: xmlserializer.serializeToString(element), 
+                rawHtml: cleanUpText(xmlserializer.serializeToString(element)), 
                 lang,
                 dir,
-                textContent,
+                textContent: cleanUpText(textContent),
                 tagname,
                 encoding,
                 textHasUrls
@@ -138,5 +138,19 @@ async function resolveMedia(elm:any, baseUrl: string):Promise<any> {
             
         }
     }
+}
+
+// text could be an HTML element string representation or just plain text
+function cleanUpText(text) {
+    // replace ideographic spaces - browsers don't collapse them so they can interfere with displays
+    // e.g. <span>1　　　　　　　　　　　　　　　　　</span> is interpreted as a really long word
+    
+    const ideographicSpace = "　";
+    const whitespace = " ";
+    const regexp = new RegExp(ideographicSpace, 'g');
+    
+    let text_ = text.replace(regexp, whitespace);
+    text_ = text_.trim();
+    return text_;
 }
 export { parse };
