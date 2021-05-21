@@ -4,7 +4,7 @@ Convert a synchronized text/audio book to a video displaying text and audio.
 
 Currently supports DAISY 2.02 to MP4 video with CSS customization.
 
-Tested scripts: Latin, Japanese (Shift_JIS) with vertical writing, Arabic
+Tested scripts: Latin, Japanese (Shift_JIS) with vertical writing, Japanese with ruby markup, Arabic
 
 See [sample output](https://d2v.netlify.app/)
 
@@ -248,3 +248,7 @@ Use the `--debug` option to collect more details about program execution. The `-
 Note that the `--debug` option will show Chromium running and may ask you to allow incoming network connections. 
 
 Also note that the `--debug` option may not provide the best images, so it's only recommended to use for troubleshooting, not for the final result.
+
+### Development
+
+See the [development notes](https://github.com/daisy/books-to-videos/wiki/Development-notes).
