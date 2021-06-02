@@ -8,7 +8,7 @@ import path from 'path';
 import * as utils from '../utils';
 
 
-async function generateVideo(book: types.Book, options: types.Options, outDirname: string, tmpDirname: string): Promise<string> {
+async function generateVideo(book: types.Book, options: types.Settings, outDirname: string, tmpDirname: string): Promise<string> {
     winston.info("Generating video");
     ffmpeg.setFfmpegPath(ffmpegPath);
     ffmpeg.setFfprobePath(ffprobePath);
@@ -34,7 +34,7 @@ async function generateVideo(book: types.Book, options: types.Options, outDirnam
     return outFilename;
 }
 
-async function mergeAudioClips(book: types.Book, options: types.Options, tmpDirname: string) {
+async function mergeAudioClips(book: types.Book, options: types.Settings, tmpDirname: string) {
     winston.verbose("Merging audio clips...");
     let allMediaSegments = utils.getMediaSegmentsSubset(book, options);
     for (let mediaSegment of allMediaSegments) {
@@ -107,7 +107,7 @@ async function mergeAudioClips(book: types.Book, options: types.Options, tmpDirn
 }
 
 // create a series of short videos and return a list of filepaths
-async function createShortVideos(book: types.Book, options: types.Options, tmpDirname: string): Promise<Array<string>> {
+async function createShortVideos(book: types.Book, options: types.Settings, tmpDirname: string): Promise<Array<string>> {
     winston.verbose("Creating short videos...");
     let allMediaSegments = utils.getMediaSegmentsSubset(book, options);
     let outDirname = path.join(tmpDirname, "videos");
@@ -124,8 +124,8 @@ async function createShortVideos(book: types.Book, options: types.Options, tmpDi
                 .audioFilters(`atrim=${mediaSegment.mergedAudio.clipBegin}:${mediaSegment.mergedAudio.clipEnd},asetpts=PTS-STARTPTS`)
                 .outputOptions([
                     '-pix_fmt yuv420p', 
-                    '-tune stillimage',
-                    '-b:a 192k'])
+                    '-tune stillimage'
+                ])
                 .saveToFile(`${outDirname}/video-${mediaSegment.internalId}.mp4`, outDirname)
                 .on('progress', (progress) => {
                     winston.verbose(`[ffmpeg] ${JSON.stringify(progress)}`);
