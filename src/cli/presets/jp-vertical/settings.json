@@ -8,7 +8,7 @@
     "numPreviewSlides": -1,
     "previewMode": false,
     "quiet": false,
-    "stylesheet": "default.css",
+    "stylesheet": "style.css",
     "verbose": false,
-    "vttSettings": ""
+    "vttSettings": "align:middle position:60%"
 }

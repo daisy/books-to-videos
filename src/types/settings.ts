@@ -1,4 +1,4 @@
-type Options = {
+type Settings = {
     autosizeFont?: boolean,
     debug?: boolean,
     encoding?: string,
@@ -15,4 +15,4 @@ type Options = {
     fontsizePx?: number
 };
 
-export { Options };
+export { Settings };

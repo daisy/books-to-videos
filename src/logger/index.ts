@@ -3,7 +3,7 @@ import fs from 'fs-extra';
 import * as types from '../types';
 import { format } from 'logform';
 
-function initLogger(logFilename?: string, options?: types.Options) {
+function initLogger(logFilename?: string, settings?: types.Settings) {
     if (logFilename != "") {
         // delete the logfile every time
         if (fs.existsSync(logFilename)) {
@@ -44,8 +44,8 @@ function initLogger(logFilename?: string, options?: types.Options) {
     }
 
     let level = "info";
-    if (options) {
-        level = options.debug ? "debug" : options.verbose ? "verbose" : "info"; 
+    if (settings) {
+        level = settings.debug ? "debug" : settings.verbose ? "verbose" : "info"; 
     }
     winston.configure({
         transports,
@@ -53,7 +53,7 @@ function initLogger(logFilename?: string, options?: types.Options) {
     });
     
     // if quiet just silence the console
-    if (options && options.quiet) {
+    if (settings && settings.quiet) {
         winston.remove(consoleTransport);
     }
 }

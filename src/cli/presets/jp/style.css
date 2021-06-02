@@ -1,5 +1,4 @@
-
-                /* http://meyerweb.com/eric/tools/css/reset/ 
+/* http://meyerweb.com/eric/tools/css/reset/ 
    v2.0 | 20110126
    License: none (public domain)
 */
@@ -49,25 +48,22 @@ table {
 }
 
 /* Books to Videos CSS */
-
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP&display=swap');
 .booksToVideos-container {
     display: grid;
     justify-content: center;
     justify-items: center;
     align-content: center;
     align-items: center;
-    background: radial-gradient(#fffbec, 80%, white);
+    background: #fffbec;
     width: 1000px;
     height: 1000px;
-    
 }
 .booksToVideos-text {
-    font-family: Helvetica;
+    font-family: 'Noto Sans JP', sans-serif;
     font-weight: normal;
     color: #44454c;
-    text-align: center;
     line-height: 2;
-    /* if autosizeFont is set to false in the books-to-videos options file, then this value gets used */
     font-size: 150px; 
     padding: 20px;
 }

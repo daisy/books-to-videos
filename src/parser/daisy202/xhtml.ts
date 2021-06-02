@@ -12,7 +12,7 @@ import getUrls from 'get-urls';
 
 // get information about the HTML elements in the book
 // only targets the subset of media segments being processed (e.g. if the user has only requested to work with certain chapters)
-async function parse(book: types.Book, options: types.Options) {   
+async function parse(book: types.Book, options: types.Settings) {   
     winston.info("Parsing HTML...");
     
     let allMediaSegments = utils.getMediaSegmentsSubset(book, options);
@@ -35,7 +35,7 @@ async function parse(book: types.Book, options: types.Options) {
 }
 
 // collect information about the HTML segments
-async function analyzeHtmlElements(filename: string, segments: Array<types.MediaSegment>, options:types.Options) {
+async function analyzeHtmlElements(filename: string, segments: Array<types.MediaSegment>, options:types.Settings) {
     // load the file
     let encoding = options.encoding ?? utils.sniffEncoding(filename);
     let fileContents = await fs.readFile(filename);

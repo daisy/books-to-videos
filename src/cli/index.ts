@@ -8,7 +8,7 @@ import * as types from '../types';
 import * as utils from '../utils';
 import { convertBookToVideo, verifyInput } from '../core';
 import { initLogger } from '../logger';
-import { setupOptions } from './options';
+import { setupSettings } from './settings';
 import { parseDaisy202 } from '../parser';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -28,14 +28,15 @@ async function main() {
         .option('-d, --debug', "Debug mode")
         .option('-e, --encoding <encoding>', "Set the character encoding")
         .option('-f, --fontsizePx <number>', "Value in pixels of the desired font size. Fontsize is otherwise determined automatically.")
-        .option('-o, --options <file>', "Options file")
         .option('-p, --previewMode', "Only generate still images as a preview of the final output")
-        .option('-s, --stylesheet <file>', "Stylesheet")
+        .option('-r, --preset <preset>', "Name of a preset", "default")
+        .option('-s, --settings <file>', "Settings file")
+        .option('-t, --stylesheet <file>', "Stylesheet")
         .option('-v, --verbose', "Verbose output")
         .option('-z, --vttSettings <settings>', "Settings to add after every caption, e.g. vertical:rl")        
-        // "options" below are CLI "options" not types.Options
-        .action(async (input, output, options) => {
-            await convert(input, output, options);
+        
+        .action(async (input, output, settings) => {
+            await convert(input, output, settings);
         });
 
     program
@@ -54,50 +55,54 @@ async function convert(input: string, output: string, cliArgs) {
     utils.ensureDirectory(outputDirname);
     let inputFilename = path.resolve(process.cwd(), input);
     
-    let options = setupOptions(cliArgs.options);
+    let settings = setupSettings(cliArgs.preset, cliArgs.settings);
     if (cliArgs.debug) {
-        options.debug = true;
+        settings.debug = true;
     }
     if (cliArgs.chapters) {
-        options.chapters = cliArgs.chapters.map(chapterNumber => parseInt(chapterNumber));
+        settings.chapters = cliArgs.chapters.map(chapterNumber => parseInt(chapterNumber));
     }
     if (cliArgs.verbose) {
-        options.verbose = true;
+        settings.verbose = true;
     }
     if (cliArgs.stylesheet) {
-        options.stylesheet = path.resolve(process.cwd(), cliArgs.stylesheet);
+        settings.stylesheet = path.resolve(process.cwd(), cliArgs.stylesheet);
     }
     if (cliArgs.encoding) {
-        options.encoding = cliArgs.encoding;
+        settings.encoding = cliArgs.encoding;
     }
     if (cliArgs.vttSettings) {
-        options.vttSettings = cliArgs.vttSettings;
+        settings.vttSettings = cliArgs.vttSettings;
     }
     if (cliArgs.previewMode) {
-        options.previewMode = cliArgs.previewMode;
+        settings.previewMode = cliArgs.previewMode;
     }
     if (cliArgs.fontsizePx) {
-        options.fontsizePx = cliArgs.fontsizePx;
-        options.autosizeFont = false;
+        settings.fontsizePx = cliArgs.fontsizePx;
+        settings.autosizeFont = false;
     }
     let logDirname = path.resolve(outputDirname, "logs-temp");
     utils.ensureDirectory(logDirname);
     let logFilename = path.join(logDirname, `${nanoid.nanoid()}.log`);
-    initLogger(logFilename, options);
-
-    if (!fs.existsSync(options.stylesheet)) {
-        winston.error(`Stylesheet not found ${options.stylesheet}`);
+    initLogger(logFilename, settings);
+    winston.info(`Loaded preset ${cliArgs.preset}`);
+    if (cliArgs.settings) {
+        winston.info(`Loaded settings ${cliArgs.settings}`);
+    }
+    
+    if (!fs.existsSync(settings.stylesheet)) {
+        winston.error(`Stylesheet not found ${settings.stylesheet}`);
         process.exit(1);
     }
 
-    let result = await convertBookToVideo(inputFilename, outputDirname, options, false, logFilename);
+    let result = await convertBookToVideo(inputFilename, outputDirname, settings, false, logFilename);
     winston.info(JSON.stringify(result, null, 2));
 }
 
 // utility to show a list of all available chapters
 // will help users when using the "chapters" option 
 async function showChapterList(input: string) {
-    let options = setupOptions("");
+    let settings = setupSettings("");
     let inputFilename = path.resolve(process.cwd(), input);
     initLogger();
     try {
@@ -107,7 +112,7 @@ async function showChapterList(input: string) {
         winston.error(err);
         process.exit(1);
     }
-    let book = await parseDaisy202(inputFilename, options);
+    let book = await parseDaisy202(inputFilename, settings);
     let chaptersList = book.chapters.map((chapter, idx) => {
         let dur = chapter.contents.reduce((acc, curr) => acc+=curr.dur, 0);
         return `${(idx + 1).toString().padEnd(15, '.')}${chapter.title.padEnd(45, '.')}Duration: ${utils.toHHMMSS(dur)}`;

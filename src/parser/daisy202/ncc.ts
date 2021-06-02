@@ -8,7 +8,7 @@ import iconv from 'iconv-lite';
 import { replaceEntities } from '../entities';
 
 // parse an NCC file
-async function parse(filename:string, options:types.Options): Promise<types.Book> {
+async function parse(filename:string, options:types.Settings): Promise<types.Book> {
     winston.verbose(`Parsing NCC file ${filename}`);
     
     let encoding = options.encoding ?? utils.sniffEncoding(filename);

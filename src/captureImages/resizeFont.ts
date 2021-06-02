@@ -6,12 +6,12 @@ import * as utils from '../utils';
 import { createHtmlPage } from './htmlPage';
 
 // stage the HTML element in a browser by itself and optimize the fontsize
-async function findOptimalFontsize(book: types.Book, options: types.Options): Promise<number> {
+async function findOptimalFontsize(book: types.Book, settings: types.Settings): Promise<number> {
     winston.info("Finding optimal fontsize...");
-    let browser = await puppeteer.launch({ defaultViewport: {width: options.maxWidth, height: options.maxHeight} , devtools: options.debug});
+    let browser = await puppeteer.launch({ defaultViewport: {width: settings.maxWidth, height: settings.maxHeight} , devtools: settings.debug});
     const browserPage = await browser.newPage();
-    let stylesheet = fs.readFileSync(options.stylesheet, 'utf-8');
-    let allMediaSegments = utils.getMediaSegmentsSubset(book, options);
+    let stylesheet = fs.readFileSync(settings.stylesheet, 'utf-8');
+    let allMediaSegments = utils.getMediaSegmentsSubset(book, settings);
     for (let mediaSegment of allMediaSegments) {
         let html = createHtmlPage(mediaSegment.html, stylesheet);
         let fontsize = await resizeFont(html, browserPage);

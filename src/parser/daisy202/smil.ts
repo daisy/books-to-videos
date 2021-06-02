@@ -10,7 +10,7 @@ import iconv from 'iconv-lite';
 // TODO this processes the SMIL file as a flat list of pars, more or less
 // how will this affect files with deeper SMIL structure, e.g. footnotes etc? 
 // TODO more sophisticated timestamp parsing
-async function parse(filename:string, options:types.Options): Promise<Array<types.MediaSegment>> {
+async function parse(filename:string, options:types.Settings): Promise<Array<types.MediaSegment>> {
     winston.verbose(`Parsing SMIL file ${filename}`);
     
     let encoding = options.encoding ?? utils.sniffEncoding(filename);

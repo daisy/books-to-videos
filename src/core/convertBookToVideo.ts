@@ -19,14 +19,14 @@ import { createHtmlPage } from '../htmlEmbed';
 async function convertBookToVideo(
     inputFilename: string, 
     outputDirname: string, 
-    options: types.Options,
+    settings: types.Settings,
     initLogger: boolean = false,
     logFilename?: string,)
     : Promise<types.ConversionResult> {
     
     let logFilename_ = logFilename ?? path.join(outputDirname, `${nanoid.nanoid()}.log`);
     if (initLogger) {
-        logger.initLogger(logFilename_, options);
+        logger.initLogger(logFilename_, settings);
     }
     
     try {
@@ -38,10 +38,10 @@ async function convertBookToVideo(
     }
     
     winston.info(`Input: ${inputFilename}`);
-    if (options.chapters.length > 0) {
-        winston.info(`Including only chapters: ${options.chapters}`);
+    if (settings.chapters.length > 0) {
+        winston.info(`Including only chapters: ${settings.chapters}`);
     }
-    winston.debug(`options: \n${JSON.stringify(options, null, 2)}`);
+    winston.debug(`settings: \n${JSON.stringify(settings, null, 2)}`);
     
     // setup the temp directory
     tmp.setGracefulCleanup();
@@ -53,26 +53,26 @@ async function convertBookToVideo(
     });
     winston.verbose(`Temp files in ${tmpDirname}`);
 
-    if (options.autosizeFont && options.fontsizePx) {
-        options.autosizeFont = false;
+    if (settings.autosizeFont && settings.fontsizePx) {
+        settings.autosizeFont = false;
         winston.info("Ignoring autosizeFont option because fontsizePx option is set");
     }
     
     // parse the book
-    let book = await parseDaisy202(inputFilename, options);
+    let book = await parseDaisy202(inputFilename, settings);
     book.safeFilename = filenamify(book.metadata.title);
 
     let outDirname = path.resolve(outputDirname, book.safeFilename);
     utils.ensureDirectory(outDirname);
 
     // make sure there's something to work with
-    if (utils.getMediaSegmentsSubset(book, options).length == 0) {
+    if (utils.getMediaSegmentsSubset(book, settings).length == 0) {
         winston.error("No content found. Check your 'chapters' and 'includePageNumbers' preferences.");
         process.exit(1);
     }
     
     // gather images of the rendered text phrases
-    book = await captureImages(book, options, tmpDirname);
+    book = await captureImages(book, settings, tmpDirname);
 
     //console.log(JSON.stringify(book, null, 2));
     
@@ -82,17 +82,17 @@ async function convertBookToVideo(
     let htmlEmbedFilename = null;
     let videoDuration = null;
 
-    if (options.previewMode) {
+    if (settings.previewMode) {
         // output option: preview of slides, no video
-        previewFilename = await generatePreview(book, options, outDirname);
+        previewFilename = await generatePreview(book, settings, outDirname);
     }
     else {
         // output option: video
-        videoFilename = await generateVideo(book, options, outDirname, tmpDirname);
+        videoFilename = await generateVideo(book, settings, outDirname, tmpDirname);
         videoDuration = await utils.getDuration(videoFilename);
         
         // add captions
-        captionsFilename = await generateCaptions(book, options, outDirname);
+        captionsFilename = await generateCaptions(book, settings, outDirname);
 
         // embed the video and captions in an HTML file
         htmlEmbedFilename = createHtmlPage(book, videoFilename, captionsFilename, videoDuration, outDirname);
@@ -125,7 +125,7 @@ async function convertBookToVideo(
 
     // if debug mode, write the parsed book model to disk
     // and also copy the tmpdir to a /debug subfolder in the output dir
-    if (options.debug) {
+    if (settings.debug) {
         let bookDebugFile = path.resolve(tmpDirname, `${book.safeFilename}.json`);
         await fs.writeFile(bookDebugFile, JSON.stringify(book, null, 2));
 

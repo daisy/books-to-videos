@@ -56,7 +56,7 @@ function findMostCommonValue(property, dataObjects) {
     return max;
 }
 
-function getMediaSegmentsSubset(book: types.Book, options: types.Options) {
+function getMediaSegmentsSubset(book: types.Book, options: types.Settings) {
     let allMediaSegments = [];
     if (options.chapters && options.chapters.length > 0) {
         let chapters = book.chapters.filter((chapter, idx) => options.chapters.includes(idx+1));

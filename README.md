@@ -53,37 +53,38 @@ The text shown in the video can be customized by creating a stylesheet in CSS. I
 
 ```
 
-You can pass the stylesheet to use in on the command line or specify it in the options file.
+You can pass the stylesheet to use in on the command line or specify it in the settings file.
 
 The [default](https://github.com/daisy/books-to-videos/blob/main/src/cli/defaults/default.css) stylesheet is a good place to start when creating your own. It contains some best practice rules for resetting browser styles that would look out of place in a video.
 
 
 ## Command line options
 
-Some options can be configured via the command line. They are:
+Some settings can be configured via the command line. They are:
 
 * `-c, --chapters`: List of numbers, e.g. `--chapters 1 2 3`. Use this option to [convert part of a book](#convert-part-of-a-book) 
 * `-d, --debug`: Run in [debug mode](#debugging)
 * `-e, --encoding`: Force a character [encoding](#set-encoding)
-* ` -f, --fontsizePx <number>`: Value in pixels of the desired font size
-* `-o, --options`: Custom options file. E.g. `--options my-options.json`
+* `-f, --fontsizePx <number>`: Value in pixels of the desired font size
 * `-p, --previewMode`: Only generate still images as a preview of the final output
-* `-s, --stylesheet`: CSS file used for the [video style](#video-style). E.g. `--stylesheet my-style.css`
+* `-s, --settings`: Custom settings file. E.g. `--settings my-settings.json` 
+* `-t, --stylesheet`: CSS file used for the [video style](#video-style). E.g. `--stylesheet my-style.css`
 * `-v, --verbose`: Turn verbose output on.
 * `-z, --vttSettings`: Specify [caption settings](#caption-settings)
 * `-h, --help`: Show help
 
-Options on the command line override options in a file.
+Settings on the command line override settings in a file.
 
-## Options file
+## Settings file
 
-All the options can be set via an options file (JSON format). The options are:
+All the settings can be set via a file (JSON format). They are:
 
 | Option | Allowed values | Description |
 |--------|----------------|-------------|
 | __autosizeFont__ | `true`/`false` | Automatically determine the largest possible font size to use |
 | __chapters__ | An array e.g. `[1, 2, 3]` | If you don't want to convert the entire book, you may [convert part of a book](#convert-part-of-a-book) by specifying which chapters to include. If this value is empty (_`[]`_), the video will be created from the whole book.
 | __debug__ | |Run in [debug mode](#debugging)|
+| __encoding__| String | Specify an encoding for the DAISY book. Useful for solving encoding issues. | 
 | __includePageNumbers__ | `true`/`false` | Whether video output should include page numbers. 
 | __fontsizePx__ | Number of pixels | Force the fontsize to this value. If present, automatically overrides `autosizeFont`; therefore, this value is not present by default |
 | __maxHeight__ | Number of pixels | Maximum Chromium viewport height. There's no need to change this option. Edit the CSS for the `booksToVideos-container` class to change the video dimensions.
@@ -95,7 +96,7 @@ All the options can be set via an options file (JSON format). The options are:
 | __verbose__ | `true`/`false` | Include extra information in the command line output
 | __vttSettings__ | String | Specify [caption settings](#caption-settings)
 
-### Default options 
+### Default settings 
 
 ```
 {
@@ -115,10 +116,10 @@ All the options can be set via an options file (JSON format). The options are:
 ```
 
 
-### Custom options file
+### Custom settings file
 
-Customize any options by creating a custom options file, e.g. 
-`my-options.json`:
+Customize any settings by creating a custom file, e.g. 
+`my-settings.json`:
 ```
 {
     "stylesheet": "vertical.css",
@@ -126,11 +127,11 @@ Customize any options by creating a custom options file, e.g.
 }
 ```
 
-It does not have to include entries for every option, just the ones you want to customize.
+It does not have to include entries for every setting, just the ones you want to customize.
 
-Then pass the custom options file on the command line:
+Then pass the custom file on the command line:
 ```
-npm run start -- convert /path/to/ncc.html /path/to/outputDirectory --options /path/to/my-options.json
+npm run start -- convert /path/to/ncc.html /path/to/outputDirectory --settings /path/to/my-settings.json
 ```
 
 ## Tips
@@ -156,15 +157,15 @@ npm run start -- list-chapters /path/to/ncc.html
 
 Note that when processing selected chapters intead of the whole book, the fontsize will be optimized for those chapters. It may be different when the whole book is processed.
 
-### Set encoding
+### Encoding
 
 While Books-to-Videos will attempt to detect the encoding, in some cases if it is not reliably found, you may specify it with the `--encoding` option. One encoding may be specified for an entire publication.
 
-### Font size options
+### Font size 
 
-The video will use just one font size for all its contents. The font size is determined based on your options.
+The video will use just one font size for all its contents. The font size is determined based on your settings.
 
-By default, `autosizeFont` is enabled in the options JSON file. To override this, set the font size you would like instead on the command line with the `fontsizePx` option. E.g. 
+By default, `autosizeFont` is enabled in the settings JSON file. To override this, set the font size you would like instead on the command line with the `fontsizePx` option. E.g. 
 
 ```
 npm run start -- convert /path/to/ncc.html outDirectory --fontsizePx 25
@@ -178,10 +179,10 @@ Two other ways to accomplish the same result are:
 1. Create a custom configuration file with `autosizeFont` set to `false`
 2. Create a custom CSS file and include your desired fontsize there, under the class selector `.booksToVideos-text`
 
-### `fontsizePx` in options file
+### `fontsizePx` in settings file
 
-1. Create a custom options JSON file with `fontsizePx` set to the value you want.
-2. Specify this custom options JSON file on the command line with the `--options` parameter
+1. Create a custom settings JSON file with `fontsizePx` set to the value you want.
+2. Specify this custom file on the command line with the `--settings` parameter
 
 ### Caption settings
 

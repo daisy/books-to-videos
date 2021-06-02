@@ -6,9 +6,9 @@ import { parse as parseNcc } from './ncc';
 import { parse as parseSmil } from './smil';
 import { parse as parseXHTML } from './xhtml';
 
-async function parse(nccFilename: string, options: types.Options): Promise<types.Book> {
+async function parse(nccFilename: string, settings: types.Settings): Promise<types.Book> {
     winston.info(`Parsing DAISY 2.02 book`);
-    let book:types.Book = await parseNcc(nccFilename, options);
+    let book:types.Book = await parseNcc(nccFilename, settings);
 
     // resolve all the content URLs
     book.chapters.map(chapter => chapter.url = path.resolve(path.dirname(nccFilename), chapter.url));
@@ -19,7 +19,7 @@ async function parse(nccFilename: string, options: types.Options): Promise<types
     // process all the SMIL files
     let allSmilData = [];
     for (let smilUrl of uniqueSmilUrls) {
-        let smilData = await parseSmil(smilUrl, options);
+        let smilData = await parseSmil(smilUrl, settings);
         allSmilData.push(smilData);
     }
     allSmilData = allSmilData.flat(); // in-order flat list of all media segments
@@ -54,7 +54,7 @@ async function parse(nccFilename: string, options: types.Options): Promise<types
     });
 
     // fill in information about the XHTML elements
-    await parseXHTML(book, options);
+    await parseXHTML(book, settings);
 
     winston.info("Done parsing DAISY 2.02 book");
     return book;

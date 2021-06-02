@@ -5,7 +5,7 @@ import fs from 'fs-extra';
 import * as utils from '../utils';
 
 // create an HTML file containing a number of preview slides; return the filename of the HTML file
-async function generatePreview(book: types.Book, options: types.Options, outDirname: string): Promise<string> {
+async function generatePreview(book: types.Book, options: types.Settings, outDirname: string): Promise<string> {
     winston.info(`Generating preview`);
     // copy image files from temp locations to outdir
     let allMediaSegments = utils.getMediaSegmentsSubset(book, options);
@@ -23,7 +23,7 @@ async function generatePreview(book: types.Book, options: types.Options, outDirn
     return outFilename;
 }
 
-function createPreviewHtml (book: types.Book, options: types.Options) {
+function createPreviewHtml (book: types.Book, options: types.Settings) {
     let allMediaSegments = utils.getMediaSegmentsSubset(book, options);
     let lang = book.metadata.lang ?? utils.findMostCommonValue("lang", allMediaSegments.map(segment => segment.html)) ?? "en";
     let dir = utils.findMostCommonValue("dir", allMediaSegments.map(segment => segment.html)) ?? "ltr";

@@ -5,17 +5,17 @@ import Vtt from 'vtt-creator';
 import * as types from '../types';
 import * as utils from '../utils';
 
-async function generateCaptions(book:types.Book, options:types.Options, outDirname: string) {
+async function generateCaptions(book:types.Book, settings:types.Settings, outDirname: string) {
     winston.info(`Generating captions`);
     var v = new Vtt();
     let startTime = 0;
     
-    let allMediaSegments = utils.getMediaSegmentsSubset(book, options);
+    let allMediaSegments = utils.getMediaSegmentsSubset(book, settings);
 
     allMediaSegments.map(mediaSegment => {
         let text = mediaSegment.html.textContent;
         text = text.replace(/\n/g, "").replace(/\t/g, "").replace(/\s\s\s\s/g, "").trim();
-        v.add(startTime, startTime + mediaSegment.durOnDisk, text, options.vttSettings ?? "");
+        v.add(startTime, startTime + mediaSegment.durOnDisk, text, settings.vttSettings ?? "");
         startTime += mediaSegment.durOnDisk;
     });
 

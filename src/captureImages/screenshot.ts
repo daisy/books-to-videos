@@ -7,25 +7,25 @@ import * as utils from '../utils';
 import iconv from 'iconv-lite';
 import { createHtmlPage } from './htmlPage';
 
-async function takeScreenshots(book: types.Book, options: types.Options, tmpDirname: string, fontsizeOverride?: number) {
+async function takeScreenshots(book: types.Book, settings: types.Settings, tmpDirname: string, fontsizeOverride?: number) {
     winston.info("Capturing HTML screenshots...");
     let outDirname = path.join(tmpDirname, "images");
     utils.ensureDirectory(outDirname);
 
     let htmlOutDirname = path.join(tmpDirname, "html");
-    if (options.debug) {
+    if (settings.debug) {
         utils.ensureDirectory(htmlOutDirname);
     }
 
-    let stylesheet = fs.readFileSync(options.stylesheet, 'utf-8');
-    let encoding = utils.sniffEncoding(options.stylesheet);
-    let stylesheetContents = await fs.readFile(options.stylesheet);
+    let stylesheet = fs.readFileSync(settings.stylesheet, 'utf-8');
+    let encoding = utils.sniffEncoding(settings.stylesheet);
+    let stylesheetContents = await fs.readFile(settings.stylesheet);
     stylesheetContents = iconv.decode(stylesheetContents, encoding);
 
-    let browser = await puppeteer.launch({ defaultViewport: {width: options.maxWidth, height: options.maxHeight} , devtools: options.debug});
+    let browser = await puppeteer.launch({ defaultViewport: {width: settings.maxWidth, height: settings.maxHeight} , devtools: settings.debug});
     const browserPage = await browser.newPage();
 
-    let allMediaSegments = utils.getMediaSegmentsSubset(book, options);
+    let allMediaSegments = utils.getMediaSegmentsSubset(book, settings);
     for (let mediaSegment of allMediaSegments) {
         winston.verbose(`Processing segment ${mediaSegment.internalId}`);
         let html = "";
@@ -37,7 +37,7 @@ async function takeScreenshots(book: types.Book, options: types.Options, tmpDirn
             html = createHtmlPage(mediaSegment.html, stylesheet);
         }
 
-        if (options.debug) {
+        if (settings.debug) {
             // useful for testing 
             await fs.writeFile(path.join(htmlOutDirname, `${mediaSegment.internalId}.html`), html);
         }
