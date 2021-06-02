@@ -7,7 +7,7 @@ import { createHtmlPage } from './htmlPage';
 
 // stage the HTML element in a browser by itself and optimize the fontsize
 async function findOptimalFontsize(book: types.Book, settings: types.Settings): Promise<number> {
-    winston.info("Finding optimal fontsize...");
+    winston.info("Finding optimal fontsize");
     let browser = await puppeteer.launch({ defaultViewport: {width: settings.maxWidth, height: settings.maxHeight} , devtools: settings.debug});
     const browserPage = await browser.newPage();
     let stylesheet = fs.readFileSync(settings.stylesheet, 'utf-8');

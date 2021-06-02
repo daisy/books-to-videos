@@ -13,7 +13,7 @@ import getUrls from 'get-urls';
 // get information about the HTML elements in the book
 // only targets the subset of media segments being processed (e.g. if the user has only requested to work with certain chapters)
 async function parse(book: types.Book, options: types.Settings) {   
-    winston.info("Parsing HTML...");
+    winston.info("Parsing XHTML content document(s)");
     
     let allMediaSegments = utils.getMediaSegmentsSubset(book, options);
     

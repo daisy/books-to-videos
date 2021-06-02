@@ -35,7 +35,7 @@ async function generateVideo(book: types.Book, options: types.Settings, outDirna
 }
 
 async function mergeAudioClips(book: types.Book, options: types.Settings, tmpDirname: string) {
-    winston.verbose("Merging audio clips...");
+    winston.verbose("Merging audio clips");
     let allMediaSegments = utils.getMediaSegmentsSubset(book, options);
     for (let mediaSegment of allMediaSegments) {
         if (mediaSegment.audios && mediaSegment.audios.length == 1) {
@@ -108,7 +108,7 @@ async function mergeAudioClips(book: types.Book, options: types.Settings, tmpDir
 
 // create a series of short videos and return a list of filepaths
 async function createShortVideos(book: types.Book, options: types.Settings, tmpDirname: string): Promise<Array<string>> {
-    winston.verbose("Creating short videos...");
+    winston.verbose("Creating short videos");
     let allMediaSegments = utils.getMediaSegmentsSubset(book, options);
     let outDirname = path.join(tmpDirname, "videos");
     utils.ensureDirectory(outDirname);
@@ -150,7 +150,7 @@ async function createShortVideos(book: types.Book, options: types.Settings, tmpD
 }
 
 async function mergeShortVideos(videoClips: Array<string>, outFilename: string, tmpDirname: string) {
-    winston.verbose("Merging short videos...");
+    winston.verbose("Merging short videos");
     let concatVideos = videoClips.map((videoClip, idx) => {
         return `file '${videoClip}'\n`;
     }).join('\n');

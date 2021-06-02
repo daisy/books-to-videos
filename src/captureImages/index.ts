@@ -6,7 +6,7 @@ import { takeScreenshots } from './screenshot';
 // take a screenshot of each HTML reference in a media segment,
 // and fill in the media segment's image field with the location of the new screenshot
 async function captureImages(book: types.Book, settings: types.Settings, tmpDirname: string): Promise<types.Book> {
-    winston.info("Preparing images...");
+    winston.info("Preparing images");
     
     if (settings.autosizeFont) {
         let optimalFontsize = await findOptimalFontsize(book, settings);

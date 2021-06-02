@@ -8,7 +8,7 @@ import iconv from 'iconv-lite';
 import { createHtmlPage } from './htmlPage';
 
 async function takeScreenshots(book: types.Book, settings: types.Settings, tmpDirname: string, fontsizeOverride?: number) {
-    winston.info("Capturing HTML screenshots...");
+    winston.info("Capturing screenshots");
     let outDirname = path.join(tmpDirname, "images");
     utils.ensureDirectory(outDirname);
 

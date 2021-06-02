@@ -6,7 +6,7 @@ import fs from 'fs-extra';
 import winston from 'winston';
 // create an HTML page with the video embedded in it
 function createHtmlPage(book: types.Book, videoFilename:string, captionsFilename:string, videoDuration:any, outDirname: string): string {
-    winston.info("Creating HTML page with embedded video and captions...");
+    winston.info("Creating HTML page with embedded video and captions");
     let htmlPage = 
     `<!DOCTYPE html>
     <html lang="${book.metadata.lang}">
