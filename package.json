@@ -19,7 +19,7 @@
         "clean": "rimraf -rf ./build",
         "compile": "tsc",
         "start": "node --experimental-specifier-resolution=node build/cli/index.js",
-        "copy-presets": "ncp src/cli/presets build/cli/presets"
+        "copy-presets": "ncp src/cli/settings build/cli/settings"
     },
     "compilerOptions": {
         "types": [

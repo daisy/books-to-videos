@@ -1,12 +1,12 @@
 import * as types from '../types';
 
-function createHtmlPage(segmentHtml: types.Html, stylesheet: string, fontsizeOverride?: number): string {
+function createHtmlPage(segmentHtml: types.Html, stylesheets: Array<string>, fontsizeOverride?: number): string {
     let document = `
     <html>
         <head>
             <meta charset="utf-8">
             <style>
-                ${stylesheet}
+                ${stylesheets.join('')}
                 ${fontsizeOverride ? 
                     `.booksToVideos-text {
                         font-size: ${fontsizeOverride}px !important;

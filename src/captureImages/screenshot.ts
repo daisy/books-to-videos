@@ -17,11 +17,8 @@ async function takeScreenshots(book: types.Book, settings: types.Settings, tmpDi
         utils.ensureDirectory(htmlOutDirname);
     }
 
-    let stylesheet = fs.readFileSync(settings.stylesheet, 'utf-8');
-    let encoding = utils.sniffEncoding(settings.stylesheet);
-    let stylesheetContents = await fs.readFile(settings.stylesheet);
-    stylesheetContents = iconv.decode(stylesheetContents, encoding);
-
+    let stylesheets = settings.stylesheets.map(stylesheet => fs.readFileSync(stylesheet, 'utf-8'));
+    
     let browser = await puppeteer.launch({ defaultViewport: {width: settings.maxWidth, height: settings.maxHeight} , devtools: settings.debug});
     const browserPage = await browser.newPage();
 
@@ -31,10 +28,10 @@ async function takeScreenshots(book: types.Book, settings: types.Settings, tmpDi
         let html = "";
         if (fontsizeOverride) {
             mediaSegment.html.renderedFontsize = fontsizeOverride;
-            html = createHtmlPage(mediaSegment.html, stylesheet, fontsizeOverride);
+            html = createHtmlPage(mediaSegment.html, stylesheets, fontsizeOverride);
         }
         else {
-            html = createHtmlPage(mediaSegment.html, stylesheet);
+            html = createHtmlPage(mediaSegment.html, stylesheets);
         }
 
         if (settings.debug) {

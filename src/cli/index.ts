@@ -29,7 +29,7 @@ async function main() {
         .option('-e, --encoding <encoding>', "Set the character encoding")
         .option('-f, --fontsizePx <number>', "Value in pixels of the desired font size. Fontsize is otherwise determined automatically.")
         .option('-p, --previewMode', "Only generate still images as a preview of the final output")
-        .option('-r, --preset <preset>', "Name of a preset", "default")
+        .option('-r, --preset <preset>', "Name of a preset", "")
         .option('-s, --settings <file>', "Settings file")
         .option('-t, --stylesheet <file>', "Stylesheet")
         .option('-v, --verbose', "Verbose output")
@@ -66,7 +66,7 @@ async function convert(input: string, output: string, cliArgs) {
         settings.verbose = true;
     }
     if (cliArgs.stylesheet) {
-        settings.stylesheet = path.resolve(process.cwd(), cliArgs.stylesheet);
+        settings.stylesheets.push(path.resolve(process.cwd(), cliArgs.stylesheet));
     }
     if (cliArgs.encoding) {
         settings.encoding = cliArgs.encoding;
@@ -85,16 +85,20 @@ async function convert(input: string, output: string, cliArgs) {
     utils.ensureDirectory(logDirname);
     let logFilename = path.join(logDirname, `${nanoid.nanoid()}.log`);
     initLogger(logFilename, settings);
-    winston.info(`Loaded preset ${cliArgs.preset}`);
+    
+    if (cliArgs.preset != "") {
+        winston.info(`Loaded preset ${cliArgs.preset}`);
+    }
     if (cliArgs.settings) {
         winston.info(`Loaded settings ${cliArgs.settings}`);
     }
+    settings.stylesheets.map(stylesheet => {
+        if (!fs.existsSync(stylesheet)) {
+            winston.error(`Stylesheet not found ${stylesheet}`);
+            process.exit(1);
+        }
+    });
     
-    if (!fs.existsSync(settings.stylesheet)) {
-        winston.error(`Stylesheet not found ${settings.stylesheet}`);
-        process.exit(1);
-    }
-
     let result = await convertBookToVideo(inputFilename, outputDirname, settings, false, logFilename);
     winston.info(JSON.stringify(result, null, 2));
 }

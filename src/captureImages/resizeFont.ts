@@ -10,10 +10,10 @@ async function findOptimalFontsize(book: types.Book, settings: types.Settings): 
     winston.info("Finding optimal fontsize");
     let browser = await puppeteer.launch({ defaultViewport: {width: settings.maxWidth, height: settings.maxHeight} , devtools: settings.debug});
     const browserPage = await browser.newPage();
-    let stylesheet = fs.readFileSync(settings.stylesheet, 'utf-8');
+    let stylesheets = settings.stylesheets.map(stylesheet => fs.readFileSync(stylesheet, 'utf-8'));
     let allMediaSegments = utils.getMediaSegmentsSubset(book, settings);
     for (let mediaSegment of allMediaSegments) {
-        let html = createHtmlPage(mediaSegment.html, stylesheet);
+        let html = createHtmlPage(mediaSegment.html, stylesheets);
         let fontsize = await resizeFont(html, browserPage);
         winston.verbose(`Max possible fontsize for ${mediaSegment.internalId}: ${fontsize}`);
         mediaSegment.html.maximumFontsize = fontsize;

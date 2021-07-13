@@ -9,7 +9,7 @@ type Settings = {
     numPreviewSlides?: number,
     previewMode?: boolean,
     quiet?: boolean,
-    stylesheet?: string,
+    stylesheets?: Array<string>,
     vttSettings: string,
     verbose?: boolean,
     fontsizePx?: number
