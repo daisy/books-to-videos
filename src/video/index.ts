@@ -113,7 +113,6 @@ async function createShortVideos(book: types.Book, options: types.Settings, tmpD
     let outDirname = path.join(tmpDirname, "videos");
     utils.ensureDirectory(outDirname);
 
-    //let idx = 0;
     let videoClips = [];
     for (let mediaSegment of allMediaSegments) {
         winston.verbose(`Processing phrase ${mediaSegment.internalId}`);
@@ -123,6 +122,7 @@ async function createShortVideos(book: types.Book, options: types.Settings, tmpD
                 .addInput(mediaSegment.mergedAudio.src) 
                 .audioFilters(`atrim=${mediaSegment.mergedAudio.clipBegin}:${mediaSegment.mergedAudio.clipEnd},asetpts=PTS-STARTPTS`)
                 .outputOptions([
+                    '-strict -2',
                     '-pix_fmt yuv420p', 
                     '-tune stillimage'
                 ])
@@ -143,7 +143,6 @@ async function createShortVideos(book: types.Book, options: types.Settings, tmpD
     
         await shortVideosOperation;
         videoClips.push(`${outDirname}/video-${mediaSegment.internalId}.mp4`);
-        //idx++;
     }
     winston.verbose("Done creating short videos");
     return videoClips;
