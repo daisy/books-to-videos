@@ -10,7 +10,7 @@ async function captureImages(book: types.Book, settings: types.Settings, tmpDirn
     
     if (settings.autosizeFont) {
         let optimalFontsize = await findOptimalFontsize(book, settings);
-        winston.info(`Using autosized font: ${optimalFontsize}`);
+        winston.info(`Using optimal fontsize: ${optimalFontsize}`);
         // take screenshots for all segments
         await takeScreenshots(book, settings, tmpDirname, optimalFontsize);
     }
