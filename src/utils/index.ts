@@ -1,10 +1,10 @@
-import fs from "fs-extra";
+import { path as ffmpegPath } from '@ffmpeg-installer/ffmpeg';
+import { path as ffprobePath } from '@ffprobe-installer/ffprobe';
 import chardet from 'chardet';
-import * as types from '../types';
-import {path as ffmpegPath} from '@ffmpeg-installer/ffmpeg';
-import {path as ffprobePath} from '@ffprobe-installer/ffprobe';
 import ffmpeg from 'fluent-ffmpeg';
+import fs from "fs-extra";
 import winston from 'winston';
+import * as types from '../types/index.js';
 
 async function ensureDirectory(dir: string) {
     if (!fs.existsSync(dir)) {
@@ -12,11 +12,12 @@ async function ensureDirectory(dir: string) {
     }
 }
 
+// TODO fixme
 // return {src, selector} for the src
 function splitSrcSelector(src: string) {
     let idx = src.lastIndexOf("#");
     let selector = "";
-    let src_: string;
+    let src_ = src;
     // trim trailing hash
     if (idx == src.length - 1) {
         src_ = src.slice(0, idx);
@@ -28,7 +29,7 @@ function splitSrcSelector(src: string) {
             src_ = src.slice(0, idx);
         }
     }
-    return {src: src_, selector};
+    return { src: src_, selector };
 }
 
 function findMostCommonValue(property, dataObjects) {
@@ -43,7 +44,7 @@ function findMostCommonValue(property, dataObjects) {
             }
         }
     });
-    
+
     let max = "";
     for (var prop in counts) {
         if (max != "" && counts[prop] > counts[max]) {
@@ -59,7 +60,7 @@ function findMostCommonValue(property, dataObjects) {
 function getMediaSegmentsSubset(book: types.Book, options: types.Settings) {
     let allMediaSegments = [];
     if (options.chapters && options.chapters.length > 0) {
-        let chapters = book.chapters.filter((chapter, idx) => options.chapters.includes(idx+1));
+        let chapters = book.chapters.filter((chapter, idx) => options.chapters.includes(idx + 1));
         allMediaSegments = chapters.map(chapter => chapter.contents).flat();
     }
     else {
@@ -82,7 +83,7 @@ async function getDuration(filename) {
     ffmpeg.setFfprobePath(ffprobePath);
 
     let getDurationOperation = new Promise((resolve, reject) => {
-        ffmpeg.ffprobe(filename, function(err, metadata) {
+        ffmpeg.ffprobe(filename, function (err, metadata) {
             //console.dir(metadata); // all metadata
             resolve(metadata.format.duration);
         });
@@ -94,17 +95,17 @@ async function getDuration(filename) {
 
 function toHHMMSS(secs) {
     var sec_num = parseInt(secs, 10)
-    var hours   = Math.floor(sec_num / 3600)
+    var hours = Math.floor(sec_num / 3600)
     var minutes = Math.floor(sec_num / 60) % 60
     var seconds = secs % 60
 
-    return [hours,minutes,seconds.toFixed(3)]
+    return [hours, minutes, seconds.toFixed(3)]
         .map(v => v < 10 ? "0" + v : v)
-        .filter((v,i) => v !== "00" || i > 0)
+        .filter((v, i) => v !== "00" || i > 0)
         .join(":")
 }
 
-function sniffEncoding(filepath:string) {
+function sniffEncoding(filepath: string) {
     let encoding = chardet.detectFileSync(filepath).toString();
     winston.verbose(`Detected ${encoding} for file ${filepath}`);
     return encoding;

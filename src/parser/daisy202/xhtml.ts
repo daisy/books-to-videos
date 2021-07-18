@@ -1,22 +1,22 @@
-import winston from 'winston';
+import fs from 'fs-extra';
+import getUrls from 'get-urls';
+import iconv from 'iconv-lite';
 import mime from 'mime-types';
 import path from 'path';
-import fs from 'fs-extra';
+import winston from 'winston';
 import { DOMParser, XMLSerializer } from 'xmldom';
 import xpath from 'xpath';
-import * as utils from '../../utils';
-import * as types from '../../types';
-import iconv from 'iconv-lite';
-import { replaceEntities } from '../entities';
-import getUrls from 'get-urls';
+import * as types from '../../types/index.js';
+import * as utils from '../../utils/index.js';
+import { replaceEntities } from '../entities.js';
 
 // get information about the HTML elements in the book
 // only targets the subset of media segments being processed (e.g. if the user has only requested to work with certain chapters)
-async function parse(book: types.Book, options: types.Settings) {   
+async function parse(book: types.Book, options: types.Settings) {
     winston.info("Parsing XHTML content document(s)");
-    
+
     let allMediaSegments = utils.getMediaSegmentsSubset(book, options);
-    
+
     // organize by HTML file to reduce the number of times we open each file
     let segmentsByFile = {};
     allMediaSegments.map(mediaSegment => {
@@ -30,18 +30,18 @@ async function parse(book: types.Book, options: types.Settings) {
 
     for (let file in segmentsByFile) {
         // this will fill in data for the segments
-        await analyzeHtmlElements(file, segmentsByFile[file], options);    
+        await analyzeHtmlElements(file, segmentsByFile[file], options);
     }
 }
 
 // collect information about the HTML segments
-async function analyzeHtmlElements(filename: string, segments: Array<types.MediaSegment>, options:types.Settings) {
+async function analyzeHtmlElements(filename: string, segments: Array<types.MediaSegment>, options: types.Settings) {
     // load the file
     let encoding = options.encoding ?? utils.sniffEncoding(filename);
     let fileContents = await fs.readFile(filename);
     fileContents = iconv.decode(fileContents, encoding);
     fileContents = replaceEntities(fileContents);
-    
+
     let doc = new DOMParser().parseFromString(fileContents);
     const select = xpath.useNamespaces({
         html: 'http://www.w3.org/1999/xhtml'
@@ -66,7 +66,7 @@ async function analyzeHtmlElements(filename: string, segments: Array<types.Media
             let textHasUrls = getUrls(textContent).size > 0;
             let elementInfo = {
                 // @ts-ignore
-                rawHtml: cleanUpText(xmlserializer.serializeToString(element)), 
+                rawHtml: cleanUpText(xmlserializer.serializeToString(element)),
                 lang,
                 dir,
                 textContent: cleanUpText(textContent),
@@ -74,7 +74,7 @@ async function analyzeHtmlElements(filename: string, segments: Array<types.Media
                 encoding,
                 textHasUrls
             };
-            segment.html = {...segment.html, ...elementInfo};
+            segment.html = { ...segment.html, ...elementInfo };
         }
         else {
             winston.warn(`Element ${segment.html.selector} not found`);
@@ -91,11 +91,11 @@ function cleanUpElement(elm) {
         if (child.nodeType == elm.ELEMENT_NODE) {
             cleanUpElement(child);
         }
-        
+
     }
 }
 
-function getAttributeSearchParents (elm, attributeName) {
+function getAttributeSearchParents(elm, attributeName) {
     if (!elm) {
         return "";
     }
@@ -111,7 +111,7 @@ function getAttributeSearchParents (elm, attributeName) {
 }
 
 // modify the xml element and resolve its image srcs to data: strings
-async function resolveMedia(elm:any, baseUrl: string):Promise<any> {
+async function resolveMedia(elm: any, baseUrl: string): Promise<any> {
     if (!elm) {
         return;
     }
@@ -123,10 +123,10 @@ async function resolveMedia(elm:any, baseUrl: string):Promise<any> {
         let mediaFilepath = new URL(src, "file://" + baseUrl).href;
         mediaFilepath = mediaFilepath.replace("file://", "");
         let mimetype = mime.lookup(path.extname(mediaFilepath));
-        let encoding = 'base64'; 
+        let encoding = 'base64';
         let data = await fs.readFile(mediaFilepath);
-        data = data.toString(encoding); 
-        data = 'data:' + mimetype + ';' + encoding + ',' + data; 
+        data = data.toString(encoding);
+        data = 'data:' + mimetype + ';' + encoding + ',' + data;
         elm.setAttribute("src", data);
     }
     else {
@@ -135,7 +135,7 @@ async function resolveMedia(elm:any, baseUrl: string):Promise<any> {
             if (child.nodeType == elm.ELEMENT_NODE) {
                 await resolveMedia(child, baseUrl);
             }
-            
+
         }
     }
 }
@@ -144,11 +144,11 @@ async function resolveMedia(elm:any, baseUrl: string):Promise<any> {
 function cleanUpText(text) {
     // replace ideographic spaces - browsers don't collapse them so they can interfere with displays
     // e.g. <span>1　　　　　　　　　　　　　　　　　</span> is interpreted as a really long word
-    
+
     const ideographicSpace = "　";
     const whitespace = " ";
     const regexp = new RegExp(ideographicSpace, 'g');
-    
+
     let text_ = text.replace(regexp, whitespace);
     text_ = text_.trim();
     return text_;

@@ -1,11 +1,11 @@
-import * as types from '../types';
-import winston from 'winston';
-import {path as ffmpegPath} from '@ffmpeg-installer/ffmpeg';
-import {path as ffprobePath} from '@ffprobe-installer/ffprobe';
+import { path as ffmpegPath } from '@ffmpeg-installer/ffmpeg';
+import { path as ffprobePath } from '@ffprobe-installer/ffprobe';
 import ffmpeg from 'fluent-ffmpeg';
 import fs from 'fs-extra';
 import path from 'path';
-import * as utils from '../utils';
+import winston from 'winston';
+import * as types from '../types/index.js';
+import * as utils from '../utils/index.js';
 
 
 async function generateVideo(book: types.Book, options: types.Settings, outDirname: string, tmpDirname: string): Promise<string> {
@@ -15,7 +15,7 @@ async function generateVideo(book: types.Book, options: types.Settings, outDirna
 
     let outFilename = path.join(outDirname, `${book.safeFilename}.mp4`);
     await mergeAudioClips(book, options, tmpDirname);
-    
+
     let videoClips = await createShortVideos(book, options, tmpDirname);
 
     // correct the durations
@@ -27,7 +27,7 @@ async function generateVideo(book: types.Book, options: types.Settings, outDirna
         seg.durOnDisk = dur;
         segIdx++;
     };
-    
+
     await mergeShortVideos(videoClips, outFilename, tmpDirname);
 
     winston.info("Done generating video");
@@ -39,7 +39,7 @@ async function mergeAudioClips(book: types.Book, options: types.Settings, tmpDir
     let allMediaSegments = utils.getMediaSegmentsSubset(book, options);
     for (let mediaSegment of allMediaSegments) {
         if (mediaSegment.audios && mediaSegment.audios.length == 1) {
-            mediaSegment.mergedAudio = {...mediaSegment.audios[0]};
+            mediaSegment.mergedAudio = { ...mediaSegment.audios[0] };
         }
         else if (mediaSegment.audios && mediaSegment.audios.length > 1) {
             winston.verbose(`Detected multiple audio clips for phrase ${mediaSegment.internalId}`);
@@ -75,7 +75,7 @@ async function mergeAudioClips(book: types.Book, options: types.Settings, tmpDir
             let concatFiles = 'concat:' + audioTmpFilenames.join('|');
             let extension = path.extname(audioTmpFilenames[0])
             let mergedAudioFilename = `${audioTmpDirname}/${mediaSegment.internalId}${extension}`;
-    
+
             // merge the clips into one audio file
             let mergeOperation = new Promise((resolve, reject) => {
                 ffmpeg()
@@ -94,7 +94,7 @@ async function mergeAudioClips(book: types.Book, options: types.Settings, tmpDir
                     })
                     .run();
             });
-            
+
             await mergeOperation;
             mediaSegment.mergedAudio = {
                 src: mergedAudioFilename,
@@ -119,11 +119,11 @@ async function createShortVideos(book: types.Book, options: types.Settings, tmpD
         let shortVideosOperation = new Promise((resolve, reject) => {
             ffmpeg()
                 .addInput(mediaSegment.capturedImage.src)
-                .addInput(mediaSegment.mergedAudio.src) 
+                .addInput(mediaSegment.mergedAudio.src)
                 .audioFilters(`atrim=${mediaSegment.mergedAudio.clipBegin}:${mediaSegment.mergedAudio.clipEnd},asetpts=PTS-STARTPTS`)
                 .outputOptions([
                     '-strict -2',
-                    '-pix_fmt yuv420p', 
+                    '-pix_fmt yuv420p',
                     '-tune stillimage'
                 ])
                 .saveToFile(`${outDirname}/video-${mediaSegment.internalId}.mp4`, outDirname)
@@ -140,7 +140,7 @@ async function createShortVideos(book: types.Book, options: types.Settings, tmpD
                 })
                 .run();
         });
-    
+
         await shortVideosOperation;
         videoClips.push(`${outDirname}/video-${mediaSegment.internalId}.mp4`);
     }
@@ -176,8 +176,8 @@ async function mergeShortVideos(videoClips: Array<string>, outFilename: string, 
                 resolve(0);
             })
             .run();
-        });
-    
+    });
+
     await mergeOperation;
     winston.verbose("Done merging short videos");
 }

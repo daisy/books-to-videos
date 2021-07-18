@@ -1,4 +1,4 @@
-import * as types from '../types';
+import * as types from '../types/index.js';
 
 function createHtmlPage(segmentHtml: types.Html, stylesheets: Array<string>, fontsizeOverride?: number): string {
     let document = `

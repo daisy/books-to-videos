@@ -1,7 +1,7 @@
-import winston from 'winston';
 import fs from 'fs-extra';
-import * as types from '../types';
 import { format } from 'logform';
+import winston from 'winston';
+import * as types from '../types/index.js';
 
 function initLogger(logFilename?: string, settings?: types.Settings) {
     if (logFilename != "") {
@@ -32,7 +32,7 @@ function initLogger(logFilename?: string, settings?: types.Settings) {
     let transports = [];
     if (logFilename) {
         let fileTransport = new winston.transports.File(
-            { 
+            {
                 filename: logFilename,
                 format: alignedWithTime
             }
@@ -45,13 +45,13 @@ function initLogger(logFilename?: string, settings?: types.Settings) {
 
     let level = "info";
     if (settings) {
-        level = settings.debug ? "debug" : settings.verbose ? "verbose" : "info"; 
+        level = settings.debug ? "debug" : settings.verbose ? "verbose" : "info";
     }
     winston.configure({
         transports,
         level
     });
-    
+
     // if quiet just silence the console
     if (settings && settings.quiet) {
         winston.remove(consoleTransport);

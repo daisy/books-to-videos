@@ -1,15 +1,15 @@
-import winston from 'winston';
 import fs from 'fs-extra';
 import path from 'path';
 import Vtt from 'vtt-creator';
-import * as types from '../types';
-import * as utils from '../utils';
+import winston from 'winston';
+import * as types from '../types/index.js';
+import * as utils from '../utils/index.js';
 
-async function generateCaptions(book:types.Book, settings:types.Settings, outDirname: string) {
+async function generateCaptions(book: types.Book, settings: types.Settings, outDirname: string) {
     winston.info(`Generating captions`);
     var v = new Vtt();
     let startTime = 0;
-    
+
     let allMediaSegments = utils.getMediaSegmentsSubset(book, settings);
 
     allMediaSegments.map(mediaSegment => {
@@ -20,7 +20,7 @@ async function generateCaptions(book:types.Book, settings:types.Settings, outDir
     });
 
     let outFilename = path.resolve(outDirname, book.metadata.title + ".vtt");
-    await fs.writeFile(outFilename, v.toString());   
+    await fs.writeFile(outFilename, v.toString());
     winston.info(`Done generating captions`);
     return outFilename;
 }

@@ -1,27 +1,28 @@
 import fs from 'fs-extra';
+import iconv from 'iconv-lite';
 import winston from 'winston';
 import { DOMParser, XMLSerializer } from 'xmldom';
 import xpath from 'xpath';
-import * as types from "../../types";
-import * as utils from '../../utils';
-import iconv from 'iconv-lite';
-import { replaceEntities } from '../entities';
+import * as types from "../../types/index.js";
+import * as utils from '../../utils/index.js';
+import { replaceEntities } from '../entities.js';
 
 // parse an NCC file
-async function parse(filename:string, options:types.Settings): Promise<types.Book> {
+async function parse(filename: string, options: types.Settings): Promise<types.Book> {
     winston.verbose(`Parsing NCC file ${filename}`);
-    
+
     let encoding = options.encoding ?? utils.sniffEncoding(filename);
     let fileContents = await fs.readFile(filename);
     fileContents = iconv.decode(fileContents, encoding);
     fileContents = replaceEntities(fileContents);
-    
+
     let doc = new DOMParser().parseFromString(fileContents);
-    
+
     // extract metadata
     let metadata: types.Metadata = parseMetadata(doc);
     // list chapters and pages
     let chapters: Array<types.Chapter> = parseChapters(doc);
+    winston.verbose("Found chapters", chapters);
     let pagelist: Array<string> = parsePagelist(doc);
     return {
         chapters,
@@ -46,7 +47,7 @@ function parseChapters(doc): Array<types.Chapter> {
         // @ts-ignore
         if (childElm.tagName[0].toLowerCase() == "h") {
             // @ts-ignore
-            let url = select("html:a/@href", childElm); 
+            let url = select("html:a/@href", childElm);
             if (url.length == 0) {
                 //@ts-ignore
                 winston.warn(`Skipping ${xmlserializer.serializeToString(childElm)}, @href not found`);
@@ -64,7 +65,7 @@ function parseChapters(doc): Array<types.Chapter> {
                 };
                 chapters.push(chapterInfo);
             }
-            
+
         }
     });
     return chapters;

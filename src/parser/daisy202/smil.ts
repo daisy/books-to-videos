@@ -1,26 +1,25 @@
-import winston from 'winston';
 import fs from 'fs-extra';
-import path from 'path';
-import { DOMParser, XMLSerializer } from 'xmldom';
-import xpath from 'xpath';
-import * as types from '../../types';
-import * as utils from '../../utils';
 import iconv from 'iconv-lite';
+import path from 'path';
+import winston from 'winston';
+import { DOMParser } from 'xmldom';
+import * as types from '../../types/index.js';
+import * as utils from '../../utils/index.js';
 
 // TODO this processes the SMIL file as a flat list of pars, more or less
 // how will this affect files with deeper SMIL structure, e.g. footnotes etc? 
 // TODO more sophisticated timestamp parsing
-async function parse(filename:string, options:types.Settings): Promise<Array<types.MediaSegment>> {
+async function parse(filename: string, options: types.Settings): Promise<Array<types.MediaSegment>> {
     winston.verbose(`Parsing SMIL file ${filename}`);
-    
+
     let encoding = options.encoding ?? utils.sniffEncoding(filename);
     let fileContents = await fs.readFile(filename);
     fileContents = iconv.decode(fileContents, encoding);
-    
+
     let doc = new DOMParser().parseFromString(fileContents);
-    
+
     let parElms = Array.from(doc.getElementsByTagName("par"));
-    let smilData:Array<types.MediaSegment> = [];
+    let smilData: Array<types.MediaSegment> = [];
     for (let parElm of parElms) {
         let textElm = parElm.getElementsByTagName("text");
         if (textElm.length > 0) {
@@ -28,17 +27,17 @@ async function parse(filename:string, options:types.Settings): Promise<Array<typ
             textElm = textElm[0];
         }
         let audioElms = Array.from(parElm.getElementsByTagName("audio"));
-        
-        let {src: htmlSrc, selector: htmlSelector} = 
+
+        let { src: htmlSrc, selector: htmlSelector } =
             // @ts-ignore
             utils.splitSrcSelector(path.resolve(path.dirname(filename), textElm.getAttribute("src")));
-        
+
         // keep track of any IDs that could be used to refer to this <par>
-        let xmlIds = collectIds(parElm); 
+        let xmlIds = collectIds(parElm);
         // express the IDs as filepath#ID
         xmlIds = xmlIds.map(xmlId => `${filename}#${xmlId}`);
 
-        let segment:types.MediaSegment = {
+        let segment: types.MediaSegment = {
             ids: xmlIds,
             html: {
                 src: htmlSrc,

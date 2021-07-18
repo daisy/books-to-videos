@@ -1,8 +1,8 @@
-import * as types from '../types';
-import winston from 'winston';
-import path from 'path';
 import fs from 'fs-extra';
-import * as utils from '../utils';
+import path from 'path';
+import winston from 'winston';
+import * as types from '../types/index.js';
+import * as utils from '../utils/index.js';
 
 // create an HTML file containing a number of preview slides; return the filename of the HTML file
 async function generatePreview(book: types.Book, options: types.Settings, outDirname: string): Promise<string> {
@@ -23,19 +23,19 @@ async function generatePreview(book: types.Book, options: types.Settings, outDir
     return outFilename;
 }
 
-function createPreviewHtml (book: types.Book, options: types.Settings) {
+function createPreviewHtml(book: types.Book, options: types.Settings) {
     let allMediaSegments = utils.getMediaSegmentsSubset(book, options);
     let lang = book.metadata.lang ?? utils.findMostCommonValue("lang", allMediaSegments.map(segment => segment.html)) ?? "en";
     let dir = utils.findMostCommonValue("dir", allMediaSegments.map(segment => segment.html)) ?? "ltr";
-    
+
     let timestampAcc = 0;
     let calcEnd = dur => {
         timestampAcc = timestampAcc + dur;
         return timestampAcc;
     };
 
-    let previewTemplate = 
-    `<!DOCTYPE html>
+    let previewTemplate =
+        `<!DOCTYPE html>
     <html 
         ${lang ? `lang="${lang}"` : 'lang="en"'} 
         ${dir ? `dir="${dir}"` : ''}>
@@ -80,8 +80,8 @@ function createPreviewHtml (book: types.Book, options: types.Settings) {
                 of ${options.maxWidth} x ${options.maxHeight}.</p>
             <p>${allMediaSegments.length > 0 ? `Font size at max resolution: ${allMediaSegments[0].html.renderedFontsize}px` : ``}</p>
             <div>
-            ${allMediaSegments.map(mediaSegment => 
-                `<figure>
+            ${allMediaSegments.map(mediaSegment =>
+            `<figure>
                     <a href="${path.basename(mediaSegment.capturedImage.src)}" title="Enlarge image">
                         <img src="${path.basename(mediaSegment.capturedImage.src)}" alt="slide containing text">
                     </a>
@@ -89,16 +89,16 @@ function createPreviewHtml (book: types.Book, options: types.Settings) {
                         <p>
                         Start: ${timestampAcc.toFixed(3)}s, 
                         End ${
-                            /* use dur not durOnDisk bc the latter is not available in previewMode */
-                            calcEnd(mediaSegment.dur).toFixed(3) 
-                            }
+            /* use dur not durOnDisk bc the latter is not available in previewMode */
+            calcEnd(mediaSegment.dur).toFixed(3)
+            }
                         </p>
                         <p>Slide text: ${mediaSegment.html.textContent.trim()}</p>
                         <p>Word count: ${mediaSegment.html.textContent.trim().split(' ').length}</p>
                         <p>Character count: ${mediaSegment.html.textContent.trim().length}</p>
                     </figcaption>
                 </figure>`
-                ).join('')}
+        ).join('')}
             </div>
         </body>
     </html>

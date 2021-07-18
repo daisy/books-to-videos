@@ -1,9 +1,9 @@
 import puppeteer from 'puppeteer';
 import winston from 'winston';
 import fs from 'fs-extra';
-import * as types from '../types';
-import * as utils from '../utils';
-import { createHtmlPage } from './htmlPage';
+import * as types from '../types/index.js';
+import * as utils from '../utils/index.js';
+import { createHtmlPage } from './htmlPage.js';
 
 // stage the HTML element in a browser by itself and optimize the fontsize
 async function findOptimalFontsize(book: types.Book, settings: types.Settings): Promise<number> {

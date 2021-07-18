@@ -1,14 +1,15 @@
-import * as utils from '../utils';
-import * as types from '../types';
 import dayjs from 'dayjs';
-import path from 'path';
 import fs from 'fs-extra';
+import path from 'path';
 import winston from 'winston';
+import * as types from '../types/index.js';
+import * as utils from '../utils/index.js';
+
 // create an HTML page with the video embedded in it
-function createHtmlPage(book: types.Book, videoFilename:string, captionsFilename:string, videoDuration:any, outDirname: string): string {
+function createHtmlPage(book: types.Book, videoFilename: string, captionsFilename: string, videoDuration: any, outDirname: string): string {
     winston.info("Creating HTML page with embedded video and captions");
-    let htmlPage = 
-    `<!DOCTYPE html>
+    let htmlPage =
+        `<!DOCTYPE html>
     <html lang="${book.metadata.lang}">
         <head>
             <title>${book.metadata.title}</title>

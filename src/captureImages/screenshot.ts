@@ -2,10 +2,9 @@ import puppeteer from 'puppeteer';
 import path from 'path';
 import winston from 'winston';
 import fs from 'fs-extra';
-import * as types from '../types';
-import * as utils from '../utils';
-import iconv from 'iconv-lite';
-import { createHtmlPage } from './htmlPage';
+import * as types from '../types/index.js';
+import * as utils from '../utils/index.js';
+import { createHtmlPage } from './htmlPage.js';
 
 async function takeScreenshots(book: types.Book, settings: types.Settings, tmpDirname: string, fontsizeOverride?: number) {
     winston.info("Capturing screenshots");

@@ -1,7 +1,7 @@
 import winston from 'winston';
-import * as types from '../types';
-import { findOptimalFontsize } from './resizeFont';
-import { takeScreenshots } from './screenshot';
+import * as types from '../types/index.js';
+import { findOptimalFontsize } from './resizeFont.js';
+import { takeScreenshots } from './screenshot.js';
 
 // take a screenshot of each HTML reference in a media segment,
 // and fill in the media segment's image field with the location of the new screenshot
