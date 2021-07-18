@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE smil PUBLIC "-//W3C//DTD SMIL 1.0//EN" "http://www.w3.org/TR/REC-smil/SMIL10.dtd">
+<smil>
+    <head>
+        <meta name="ncc:generator" content="markdown-to-daisy202" />
+        <meta name="dc:format" content="Daisy 2.02" />
+        <meta name="ncc:timeInThisSmil" content="00:43.308" />
+    </head>
+<body>
+    <seq dur="43.308s">
+        <par endsync="last" id="t-0">
+            <text src="sample.html#t-0" />
+            <audio src="sample.mp3" 
+                clip-begin="npt=0.000s" 
+                clip-end="npt=2.565s" />
+        </par><par endsync="last" id="t-1">
+            <text src="sample.html#t-1" />
+            <audio src="sample.mp3" 
+                clip-begin="npt=2.565s" 
+                clip-end="npt=10.303s" />
+        </par><par endsync="last" id="t-2">
+            <text src="sample.html#t-2" />
+            <audio src="sample.mp3" 
+                clip-begin="npt=10.303s" 
+                clip-end="npt=15.082s" />
+        </par><par endsync="last" id="t-3">
+            <text src="sample.html#t-3" />
+            <audio src="sample.mp3" 
+                clip-begin="npt=15.082s" 
+                clip-end="npt=18.834s" />
+        </par><par endsync="last" id="t-4">
+            <text src="sample.html#t-4" />
+            <audio src="sample.mp3" 
+                clip-begin="npt=18.834s" 
+                clip-end="npt=23.836s" />
+        </par><par endsync="last" id="t-5">
+            <text src="sample.html#t-5" />
+            <audio src="sample.mp3" 
+                clip-begin="npt=23.836s" 
+                clip-end="npt=26.718s" />
+        </par><par endsync="last" id="t-6">
+            <text src="sample.html#t-6" />
+            <audio src="sample.mp3" 
+                clip-begin="npt=26.718s" 
+                clip-end="npt=31.919s" />
+        </par><par endsync="last" id="t-7">
+            <text src="sample.html#t-7" />
+            <audio src="sample.mp3" 
+                clip-begin="npt=31.919s" 
+                clip-end="npt=34.579s" />
+        </par><par endsync="last" id="t-8">
+            <text src="sample.html#t-8" />
+            <audio src="sample.mp3" 
+                clip-begin="npt=34.579s" 
+                clip-end="npt=40.282s" />
+        </par><par endsync="last" id="t-9">
+            <text src="sample.html#t-9" />
+            <audio src="sample.mp3" 
+                clip-begin="npt=40.282s" 
+                clip-end="npt=43.249s" />
+        </par>
+    </seq>
+</body>
+</smil>

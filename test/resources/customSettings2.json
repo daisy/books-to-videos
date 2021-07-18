@@ -1,0 +1,9 @@
+{
+    "debug": false,
+    "previewMode": true,
+    "numPreviewSlides": 5,
+    "stylesheets": [
+        "style.css"
+    ],
+    "verbose": true
+}

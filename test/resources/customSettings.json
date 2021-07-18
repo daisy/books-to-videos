@@ -1,0 +1,8 @@
+{
+    "debug": true,
+    "previewMode": true,
+    "stylesheets": [
+        "style.css"
+    ],
+    "verbose": true
+}
