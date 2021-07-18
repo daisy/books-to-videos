@@ -1,15 +1,14 @@
-import path from 'path';
-import fs from 'fs-extra';
-import { fileURLToPath } from 'url';
 import { Command } from 'commander';
-import winston from 'winston';
+import fs from 'fs-extra';
 import * as nanoid from 'nanoid';
-import * as types from '../types';
-import * as utils from '../utils';
-import { convertBookToVideo, verifyInput } from '../core';
-import { initLogger } from '../logger';
-import { setupSettings } from './settings';
-import { parseDaisy202 } from '../parser';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import winston from 'winston';
+import { convertBookToVideo, verifyInput } from '../core/index.js';
+import { initLogger } from '../logger/index.js';
+import { parseDaisy202 } from '../parser/index.js';
+import * as utils from '../utils/index.js';
+import { setupSettings } from './settings.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -33,8 +32,8 @@ async function main() {
         .option('-s, --settings <file>', "Settings file")
         .option('-t, --stylesheet <file>', "Stylesheet")
         .option('-v, --verbose', "Verbose output")
-        .option('-z, --vttSettings <settings>', "Settings to add after every caption, e.g. vertical:rl")        
-        
+        .option('-z, --vttSettings <settings>', "Settings to add after every caption, e.g. vertical:rl")
+
         .action(async (input, output, settings) => {
             await convert(input, output, settings);
         });
@@ -54,7 +53,7 @@ async function convert(input: string, output: string, cliArgs) {
     let outputDirname = path.resolve(process.cwd(), output);
     utils.ensureDirectory(outputDirname);
     let inputFilename = path.resolve(process.cwd(), input);
-    
+
     let settings = setupSettings(cliArgs.preset, cliArgs.settings);
     if (cliArgs.debug) {
         settings.debug = true;
@@ -85,7 +84,7 @@ async function convert(input: string, output: string, cliArgs) {
     utils.ensureDirectory(logDirname);
     let logFilename = path.join(logDirname, `${nanoid.nanoid()}.log`);
     initLogger(logFilename, settings);
-    
+
     if (cliArgs.preset != "") {
         winston.info(`Loaded preset ${cliArgs.preset}`);
     }
@@ -98,9 +97,16 @@ async function convert(input: string, output: string, cliArgs) {
             process.exit(1);
         }
     });
-    
-    let result = await convertBookToVideo(inputFilename, outputDirname, settings, false, logFilename);
-    winston.info(JSON.stringify(result, null, 2));
+
+    try {
+        let result = await convertBookToVideo(inputFilename, outputDirname, settings, false, logFilename);
+        winston.info(JSON.stringify(result, null, 2));
+    }
+    catch (err) {
+        winston.error("Error; exiting");
+        process.exit(1);
+    }
+
 }
 
 // utility to show a list of all available chapters
@@ -118,7 +124,7 @@ async function showChapterList(input: string) {
     }
     let book = await parseDaisy202(inputFilename, settings);
     let chaptersList = book.chapters.map((chapter, idx) => {
-        let dur = chapter.contents.reduce((acc, curr) => acc+=curr.dur, 0);
+        let dur = chapter.contents.reduce((acc, curr) => acc += curr.dur, 0);
         return `${(idx + 1).toString().padEnd(15, '.')}${chapter.title.padEnd(45, '.')}Duration: ${utils.toHHMMSS(dur)}`;
     });
 

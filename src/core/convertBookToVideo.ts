@@ -1,55 +1,55 @@
-import tmp from 'tmp';
-import winston from "winston";
-import path from 'path';
 import filenamify from 'filenamify';
 import fs from 'fs-extra';
 import * as nanoid from 'nanoid';
-import * as types from '../types';
-import * as logger from '../logger';
-import * as utils from '../utils';
-import { parseDaisy202 } from '../parser';
-import { generateCaptions } from '../captions';
-import { generatePreview } from '../preview';
-import { captureImages } from '../captureImages';
-import { generateVideo } from '../video';
-import { verifyInput } from './verifyInput';
-import { createHtmlPage } from '../htmlEmbed';
+import path from 'path';
+import tmp from 'tmp';
+import winston from "winston";
+import { generateCaptions } from '../captions/index.js';
+import { captureImages } from '../captureImages/index.js';
+import { createHtmlPage } from '../htmlEmbed/index.js';
+import * as logger from '../logger/index.js';
+import { parseDaisy202 } from '../parser/index.js';
+import { generatePreview } from '../preview/index.js';
+import * as types from '../types/index.js';
+import * as utils from '../utils/index.js';
+import { generateVideo } from '../video/index.js';
+import { verifyInput } from './verifyInput.js';
 
 // returns an output object
 async function convertBookToVideo(
-    inputFilename: string, 
-    outputDirname: string, 
+    inputFilename: string,
+    outputDirname: string,
     settings: types.Settings,
     initLogger: boolean = false,
     logFilename?: string,)
     : Promise<types.ConversionResult> {
-    
+
     let logFilename_ = logFilename ?? path.join(outputDirname, `${nanoid.nanoid()}.log`);
     if (initLogger) {
         logger.initLogger(logFilename_, settings);
     }
-    
+
     try {
         verifyInput(inputFilename);
     }
-    catch(err) {
-        winston.error(err);
-        process.exit(1);
+    catch (err) {
+        winston.error(err.message);
+        throw err;
     }
-    
+
     winston.info(`Input: ${inputFilename}`);
     if (settings.chapters.length > 0) {
         winston.info(`Including only chapters: ${settings.chapters}`);
     }
     winston.debug(`settings: \n${JSON.stringify(settings, null, 2)}`);
-    
+
     // setup the temp directory
     tmp.setGracefulCleanup();
-    let tmpDirname:string = await new Promise((resolve, reject) => {
+    let tmpDirname: string = await new Promise((resolve, reject) => {
         tmp.dir(function _tempDirCreated(err, path) {
             if (err) reject(err);
             else resolve(path);
-          });
+        });
     });
     winston.verbose(`Temp files in ${tmpDirname}`);
 
@@ -57,7 +57,7 @@ async function convertBookToVideo(
         settings.autosizeFont = false;
         winston.info("Ignoring autosizeFont option because fontsizePx option is set");
     }
-    
+
     // parse the book
     let book = await parseDaisy202(inputFilename, settings);
     book.safeFilename = filenamify(book.metadata.title);
@@ -70,12 +70,12 @@ async function convertBookToVideo(
         winston.error("No content found. Check your 'chapters' and 'includePageNumbers' preferences.");
         process.exit(1);
     }
-    
+
     // gather images of the rendered text phrases
     book = await captureImages(book, settings, tmpDirname);
 
     //console.log(JSON.stringify(book, null, 2));
-    
+
     let previewFilename = null;
     let captionsFilename = null;
     let videoFilename = null;
@@ -90,7 +90,7 @@ async function convertBookToVideo(
         // output option: video
         videoFilename = await generateVideo(book, settings, outDirname, tmpDirname);
         videoDuration = await utils.getDuration(videoFilename);
-        
+
         // add captions
         captionsFilename = await generateCaptions(book, settings, outDirname);
 
@@ -101,9 +101,9 @@ async function convertBookToVideo(
     // when we start logging, we don't know the book's name and therefore we don't know the final output directory
     // so we can move the logfile there at the end
     let finalLogFilename = path.resolve(outDirname, `${book.safeFilename}.log`);
-    await fs.move(logFilename_, finalLogFilename, {overwrite: true});
+    await fs.move(logFilename_, finalLogFilename, { overwrite: true });
 
-    let retval:types.ConversionResult = {
+    let retval: types.ConversionResult = {
         outputDirectory: outDirname,
         logFile: path.basename(finalLogFilename)
     };
@@ -138,7 +138,7 @@ async function convertBookToVideo(
     }
 
     return retval;
-    
+
 }
 
 export { convertBookToVideo };
