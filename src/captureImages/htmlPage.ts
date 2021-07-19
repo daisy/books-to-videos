@@ -5,16 +5,18 @@ function createHtmlPage(segmentHtml: types.Html, stylesheets: Array<string>, fon
     <html>
         <head>
             <meta charset="utf-8">
-            <style>
-                ${stylesheets.join('')}
-                ${fontsizeOverride ? 
-                    `.booksToVideos-text {
-                        font-size: ${fontsizeOverride}px !important;
-                    }` 
-                    : 
-                    ''
+            
+                ${stylesheets.map(stylesheet => `<style>${stylesheet}</style>`).join('')}
+                
+                ${fontsizeOverride ?
+            `<style>
+                .booksToVideos-text {
+                    font-size: ${fontsizeOverride}px !important;
                 }
-            </style>
+            </style>`
+            :
+            ''
+        }
         </head>
         <body>
             <div class="booksToVideos-container" lang="${segmentHtml.lang}" dir="${segmentHtml.dir}">
