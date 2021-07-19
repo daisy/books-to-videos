@@ -1,6 +1,6 @@
+import fs from 'fs-extra';
 import puppeteer from 'puppeteer';
 import winston from 'winston';
-import fs from 'fs-extra';
 import * as types from '../types/index.js';
 import * as utils from '../utils/index.js';
 import { createHtmlPage } from './htmlPage.js';
@@ -8,7 +8,13 @@ import { createHtmlPage } from './htmlPage.js';
 // stage the HTML element in a browser by itself and optimize the fontsize
 async function findOptimalFontsize(book: types.Book, settings: types.Settings): Promise<number> {
     winston.info("Finding optimal fontsize");
-    let browser = await puppeteer.launch({ defaultViewport: {width: settings.maxWidth, height: settings.maxHeight} , devtools: settings.debug});
+    let browser = await puppeteer.launch({
+        defaultViewport: {
+            width: settings.maxWidth,
+            height: settings.maxHeight
+        },
+        devtools: settings.debug
+    });
     const browserPage = await browser.newPage();
     let stylesheets = settings.stylesheets.map(stylesheet => fs.readFileSync(stylesheet, 'utf-8'));
     let allMediaSegments = utils.getMediaSegmentsSubset(book, settings);
@@ -18,7 +24,7 @@ async function findOptimalFontsize(book: types.Book, settings: types.Settings): 
         winston.verbose(`Max possible fontsize for ${mediaSegment.internalId}: ${fontsize}`);
         mediaSegment.html.maximumFontsize = fontsize;
     }
-    
+
     await browserPage.close();
     await browser.close();
     let allFontsizes = allMediaSegments.map(mediaSegment => mediaSegment.html.maximumFontsize);
@@ -31,23 +37,23 @@ async function resizeFont(html: string, browserPage: puppeteer.Page) {
     let fontsize = await browserPage.evaluate((html) => {
 
         //debugger; //chromium debugger breakpoint
-        
+
         // does the text fit in its container?
         let fits = () => {
             let textContentsElm = document.querySelector(".booksToVideos-text");
             let containerElm = document.querySelector(".booksToVideos-container");
             let outlineWidth = parseInt(getComputedStyle(containerElm).getPropertyValue('outline-width').replace("px", ''));
-            
+
             if (textContentsElm.textContent.trim() == "") {
                 return 0;
             }
 
             let tooBigX = textContentsElm.clientWidth > containerElm.clientWidth;
             let tooBigY = textContentsElm.clientHeight > containerElm.clientHeight;
-    
+
             let tooSmallX = textContentsElm.clientWidth < containerElm.clientWidth;
             let tooSmallY = textContentsElm.clientHeight < containerElm.clientHeight;
-    
+
             if (tooBigX || tooBigY) {
                 return 1;
             }
@@ -78,19 +84,19 @@ async function resizeFont(html: string, browserPage: puppeteer.Page) {
                 // // if the last two runs were opposite, we'll just get stuck in a loop flip flopping
                 // // go with the smaller of the two and call it quits
                 let force = lastTwoRuns.length > 1 && lastTwoRuns[0] != lastTwoRuns[1];
-                
+
                 let adjustment = textFits * -1; // adjust in the opposite direction
                 if (force) {
                     adjustment = lastTwoRuns.indexOf(-1) == 0 ? -1 : 0;
                 }
                 let newFontsize = parseInt(
                     getComputedStyle(document.querySelector(".booksToVideos-text"))
-                    .getPropertyValue('font-size').replace("px", '')) + adjustment;
-                
+                        .getPropertyValue('font-size').replace("px", '')) + adjustment;
+
                 document.styleSheets.item(0).addRule(
-                    ".booksToVideos-text", 
+                    ".booksToVideos-text",
                     `font-size: ${newFontsize}px !important;`);
-        
+
                 textFits = fits(); // reevaluate
                 didResize = true;
                 firstAttempt = false;
@@ -104,7 +110,7 @@ async function resizeFont(html: string, browserPage: puppeteer.Page) {
         autosizeFont();
         let fontsize = parseInt(
             getComputedStyle(document.querySelector(".booksToVideos-text"))
-            .getPropertyValue('font-size').replace("px", ''));
+                .getPropertyValue('font-size').replace("px", ''));
         return fontsize;
 
     }, html);

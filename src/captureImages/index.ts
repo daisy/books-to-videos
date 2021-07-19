@@ -7,9 +7,11 @@ import { takeScreenshots } from './screenshot.js';
 // and fill in the media segment's image field with the location of the new screenshot
 async function captureImages(book: types.Book, settings: types.Settings, tmpDirname: string): Promise<types.Book> {
     winston.info("Preparing images");
-    
+
     if (settings.autosizeFont) {
         let optimalFontsize = await findOptimalFontsize(book, settings);
+        let reducedFactor = (100 - settings.reduceAutosizedFontBy) / 100;
+        optimalFontsize = reducedFactor * optimalFontsize;
         winston.info(`Using optimal fontsize: ${optimalFontsize}`);
         // take screenshots for all segments
         await takeScreenshots(book, settings, tmpDirname, optimalFontsize);

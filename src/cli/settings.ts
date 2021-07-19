@@ -25,7 +25,6 @@ function setupSettings(preset?: string, customSettingsFilename?: string): types.
         stylesheets.push(...customSettings.stylesheets);
         settings.stylesheets = [...stylesheets];
     }
-
     return settings;
 }
 // relative to this file
