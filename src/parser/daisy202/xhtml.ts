@@ -41,6 +41,7 @@ async function analyzeHtmlElements(filename: string, segments: Array<types.Media
     let fileContents = await fs.readFile(filename);
     fileContents = iconv.decode(fileContents, encoding);
     fileContents = replaceEntities(fileContents);
+    fileContents = replaceElements(fileContents);
 
     let doc = new DOMParser().parseFromString(fileContents);
     const select = xpath.useNamespaces({
@@ -86,6 +87,8 @@ function cleanUpElement(elm) {
     elm.removeAttribute("face");
     elm.removeAttribute("size");
     elm.removeAttribute("style");
+    elm.removeAttribute("align");
+
     for (let child of Array.from(elm.childNodes)) {
         // @ts-ignore
         if (child.nodeType == elm.ELEMENT_NODE) {
@@ -152,5 +155,15 @@ function cleanUpText(text) {
     let text_ = text.replace(regexp, whitespace);
     text_ = text_.trim();
     return text_;
+}
+
+// replace the center element (found in some XHTML files) with span
+function replaceElements(fileContents) {
+    let regexpStartTag = new RegExp('<center', 'g');
+    let regexpEndTag = new RegExp('</center', 'g');
+    let fileContents_ = fileContents.replace(regexpStartTag, '<span');
+    fileContents_ = fileContents_.replace(regexpEndTag, '</span');
+    return fileContents_;
+
 }
 export { parse };
