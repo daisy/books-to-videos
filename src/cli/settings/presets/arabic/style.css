@@ -1,22 +1,5 @@
-@import url('https://fonts.googleapis.com/css2?family=Harmattan&display=swap');
-.booksToVideos-container {
-    display: grid;
-    justify-content: center;
-    justify-items: center;
-    align-content: center;
-    align-items: center;
-    background: #fffbec;
-    width: 1000px;
-    height: 1000px;
-}
+@import url('https://fonts.googleapis.com/css2?family=Mirza&display=swap');
+
 .booksToVideos-text {
-    font-family: 'Harmattan', sans-serif;
-    font-weight: normal;
-    color: #44454c;
-    line-height: 2;
-    /* if autosizeFont is set to false in the books-to-videos settings file, then this value gets used */
-    font-size: 150px; 
-    padding: 20px;
+    font-family: 'Mirza', sans-serif;
 }
-
-

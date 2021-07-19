@@ -1,4 +1,7 @@
 {
-    "stylesheet": "style.css",
+    "reduceAutosizedFontBy": 10,
+    "stylesheets": [
+        "style.css"
+    ],
     "vttSettings": "align:middle position:60%"
 }

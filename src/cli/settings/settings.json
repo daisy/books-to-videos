@@ -8,7 +8,10 @@
     "numPreviewSlides": -1,
     "previewMode": false,
     "quiet": false,
-    "stylesheets": ["style.css"],
+    "reduceAutosizedFontBy": 0,
+    "stylesheets": [
+        "style.css"
+    ],
     "verbose": false,
     "vttSettings": ""
 }
