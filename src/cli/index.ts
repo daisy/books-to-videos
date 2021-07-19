@@ -33,7 +33,7 @@ async function main() {
         .option('-t, --stylesheet <file>', "Stylesheet")
         .option('-v, --verbose', "Verbose output")
         .option('-z, --vttSettings <settings>', "Settings to add after every caption, e.g. vertical:rl")
-
+        .option('-n, --numPreviewSlides <number>', "Number of preview slides to generate")
         .action(async (input, output, settings) => {
             await convert(input, output, settings);
         });
@@ -79,6 +79,9 @@ async function convert(input: string, output: string, cliArgs) {
     if (cliArgs.fontsizePx) {
         settings.fontsizePx = cliArgs.fontsizePx;
         settings.autosizeFont = false;
+    }
+    if (cliArgs.numPreviewSlides) {
+        settings.numPreviewSlides = cliArgs.numPreviewSlides;
     }
     let logDirname = path.resolve(outputDirname, "logs-temp");
     utils.ensureDirectory(logDirname);
