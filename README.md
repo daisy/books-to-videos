@@ -4,13 +4,9 @@ Convert a synchronized text/audio book to a video displaying text and audio.
 
 Currently supports DAISY 2.02 to MP4 video with CSS customization.
 
-Tested scripts: Latin, Japanese (Shift_JIS) with vertical writing, Japanese with ruby markup, Arabic
-
-See [sample output](https://d2v.netlify.app/)
-
 ## Installation
 
-TODO: instructions for installation once package is published
+TODO
 
 ## Usage
 
