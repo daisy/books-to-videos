@@ -35,19 +35,14 @@ The text shown in the video can be customized by creating a stylesheet in CSS. I
 
 ```
 .booksToVideos-container {    
-    outline-offset: -15px;
-    outline: lightblue 15px solid;
-    background-color: black;
-
     width: 2000px;
     height: 2000px;
-    
+    background-color: black;
 }
 .booksToVideos-text {
     font-family: Optima;
     font-weight: bold;
     color: lightblue;
-    text-align: center;
     line-height: 1.6;
 }
 
@@ -55,8 +50,7 @@ The text shown in the video can be customized by creating a stylesheet in CSS. I
 
 You can pass the stylesheet to use in on the command line or specify it in the settings file.
 
-The [default](https://github.com/daisy/books-to-videos/blob/main/src/cli/defaults/default.css) stylesheet is a good place to start when creating your own. It contains some best practice rules for resetting browser styles that would look out of place in a video.
-
+If you pass in a custom stylesheet, either via `--stylesheet` or via custom settings, it will be used *in addition to* the default stylesheet as well as any presets that you're using. 
 
 ## Command line options
 
