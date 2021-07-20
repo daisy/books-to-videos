@@ -1,19 +1,33 @@
 {
-  "name": "books-to-videos",
+  "name": "@daisy/books-to-videos",
   "version": "0.1.0",
   "description": "Transform a synchronized text and audio book into a video presentation",
+  "engines": {
+    "node": ">=15.5.0",
+    "npm": ">=7.3.0"
+  },
   "keywords": [
     "accessibility",
     "DAISY",
     "video",
     "ebook"
   ],
-  "author": "marisa.demeglio@gmail.com",
-  "license": "ISC",
+  "author": {
+    "name": "DAISY developers",
+    "organization": "DAISY Consortium",
+    "url": "http://www.daisy.org/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/daisy/books-to-videos"
+  },
+  "bugs": {
+    "url": "https://github.com/daisy/books-to-videos/issues"
+  },
+  "license": "MIT",
+  "main": "build/src/cli/index.js",
+  "bin": "build/src/cli/index.js",
   "type": "module",
-  "workspaces": [
-    "packages/*"
-  ],
   "scripts": {
     "build": "npm run clean && npm run compile && npm run copy-presets",
     "clean": "rimraf -rf ./build",
