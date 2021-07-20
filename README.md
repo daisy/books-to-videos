@@ -66,9 +66,11 @@ Some settings can be configured via the command line. They are:
 * `-d, --debug`: Run in [debug mode](#debugging)
 * `-e, --encoding`: Force a character [encoding](#set-encoding)
 * `-f, --fontsizePx <number>`: Value in pixels of the desired font size
+* `-n, --numPreviewSlides <number>`: Number of preview slides to generate, if in preview mode
+* `-r, --preset <file>`: Preset file (JSON). See (presets)[#presets]
 * `-p, --previewMode`: Only generate still images as a preview of the final output
 * `-s, --settings`: Custom settings file. E.g. `--settings my-settings.json` 
-* `-t, --stylesheet`: CSS file used for the [video style](#video-style). E.g. `--stylesheet my-style.css`
+* `-t, --stylesheet <file>`: CSS file used for the [video style](#video-style). E.g. `--stylesheet my-style.css`
 * `-v, --verbose`: Turn verbose output on.
 * `-z, --vttSettings`: Specify [caption settings](#caption-settings)
 * `-h, --help`: Show help
@@ -92,6 +94,7 @@ All the settings can be set via a file (JSON format). They are:
 | __numPreviewSlides__ | Number of slides, or `-1` | How many slides to create when running in `previewMode`. To create all possible slides, set this option to `-1`.
 | __previewMode__ | `true`/`false` | Create an HTML page with a list of slides instead of creating a video. Good for testing out styles; faster than making a video.
 | __quiet__ | `true`/`false` | Don't output anything on the command line
+| __reduceFontsizeBy__ | `number` | Reduce the autosized fontsize by this percent, e.g. `10` for 10 percent
 | __stylesheet__ | Filename | CSS file used for the [video style](#video-style)
 | __verbose__ | `true`/`false` | Include extra information in the command line output
 | __vttSettings__ | String | Specify [caption settings](#caption-settings)
@@ -114,7 +117,21 @@ All the settings can be set via a file (JSON format). They are:
     "vttSettings": ""
 }
 ```
+### Presets
 
+In addition to the default settings, there are 3 presets that can be used. They are:
+
+* `arabic`
+* `japanese`
+* `japanese-vertical`
+
+The presets have specific overrides to better accommodate these scripts, such as for fonts and alignments. 
+
+Use a preset on the command line:
+
+```
+npm run start -- convert /path/to/ncc.html /path/to/outputDirectory --preset arabic
+```
 
 ### Custom settings file
 
@@ -133,6 +150,8 @@ Then pass the custom file on the command line:
 ```
 npm run start -- convert /path/to/ncc.html /path/to/outputDirectory --settings /path/to/my-settings.json
 ```
+
+It is also possible to use a preset and a custom settings file. In the case that the same option is specified in more than one place, the value in the custom settings file will be what is used.
 
 ## Tips
 
@@ -160,6 +179,22 @@ Note that when processing selected chapters intead of the whole book, the fontsi
 ### Encoding
 
 While Books-to-Videos will attempt to detect the encoding, in some cases if it is not reliably found, you may specify it with the `--encoding` option. One encoding may be specified for an entire publication.
+
+### Custom fonts
+
+You may specify your own font in a custom CSS file:
+
+```
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP&display=swap');
+
+.booksToVideos-text {
+    font-family: 'Noto Sans JP', sans-serif;
+}
+```
+
+Be sure to use the `@import` syntax rather than referring to a local file on disk via `@font-face`. Local font files are not supported.
+
+Also note that the `@import` statement must be at the top of the CSS file, as is the standard requirement.
 
 ### Font size 
 
