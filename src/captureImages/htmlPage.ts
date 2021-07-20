@@ -20,9 +20,21 @@ function createHtmlPage(segmentHtml: types.Html, stylesheets: Array<string>, fon
         </head>
         <body>
             <div class="booksToVideos-container" lang="${segmentHtml.lang}" dir="${segmentHtml.dir}">
-                <div class="booksToVideos-text ${segmentHtml.textHasUrls ? `url` : ''}">
+                ${segmentHtml.tagname != 'img' ?
+            `<div class="booksToVideos-text ${segmentHtml.textHasUrls ? `url` : ''}">
+                    ${segmentHtml.rawHtml}
+                    </div>`
+            :
+            `<div class="booksToVideos-text">
+                <div class="booksToVideos-image">
                 ${segmentHtml.rawHtml}
                 </div>
+                <div class="${segmentHtml.textHasUrls ? `url` : ''}">
+                ${segmentHtml.textContent}
+                </div>
+                
+            </div>`
+        }
             </div>
         </body>
     </html>

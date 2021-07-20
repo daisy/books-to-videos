@@ -69,8 +69,8 @@ table {
     
 }
 .booksToVideos-text img {
-    max-height: 1600px;
-    max-width: 1600px;  
+    max-height: 1000;
+    max-width: 1000px;  
 }
 
 a, a:visited {
