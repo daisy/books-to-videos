@@ -6,14 +6,28 @@ Currently supports DAISY 2.02 to MP4 video with CSS customization.
 
 ## Installation
 
-TODO
+First, install [nodejs](https://nodejs.org/en/download/current/), version 15.x or higher.
+
+Then from the command prompt, install the `books-to-videos` package:
+
+```
+npm i -g @daisy/books-to-videos
+```
+
+To see if it was installed successfully, test it out with this command:
+
+```
+books-to-videos --help
+```
+
+If it worked, a short description should appear, along with a list of available commands.
 
 ## Usage
 
 This command:
 
 ```
-npm run start -- convert /path/to/ncc.html /path/to/outputDirectory
+books-to-videos convert /path/to/ncc.html /path/to/outputDirectory
 ```
 
 Will create these files in `outputDirectory`:
@@ -120,7 +134,7 @@ The presets have specific overrides to better accommodate these scripts, such as
 Use a preset on the command line:
 
 ```
-npm run start -- convert /path/to/ncc.html /path/to/outputDirectory --preset arabic
+books-to-videos convert /path/to/ncc.html /path/to/outputDirectory --preset arabic
 ```
 
 ### Custom settings file
@@ -138,7 +152,7 @@ It does not have to include entries for every setting, just the ones you want to
 
 Then pass the custom file on the command line:
 ```
-npm run start -- convert /path/to/ncc.html /path/to/outputDirectory --settings /path/to/my-settings.json
+books-to-videos convert /path/to/ncc.html /path/to/outputDirectory --settings /path/to/my-settings.json
 ```
 
 It is also possible to use a preset and a custom settings file. In the case that the same option is specified in more than one place, the value in the custom settings file will be what is used.
@@ -150,13 +164,13 @@ It is also possible to use a preset and a custom settings file. In the case that
 If you are just converting part of a book, you can use the numbers to say which chapters you want to convert:
 
 ```
-npm run start -- convert /path/to/book/ncc.html /path/to/outputDirectory --chapters 2 3
+books-to-videos convert /path/to/book/ncc.html /path/to/outputDirectory --chapters 2 3
 ```
 
 To get the chapter numbers, use the `list-chapters` command:
 
 ```
-npm run start -- list-chapters /path/to/ncc.html
+books-to-videos list-chapters /path/to/ncc.html
 
 1. First chapter
 2. Second chapter
@@ -193,7 +207,7 @@ The video will use just one font size for all its contents. The font size is det
 By default, `autosizeFont` is enabled in the settings JSON file. To override this, set the font size you would like instead on the command line with the `fontsizePx` option. E.g. 
 
 ```
-npm run start -- convert /path/to/ncc.html outDirectory --fontsizePx 25
+books-to-videos convert /path/to/ncc.html outDirectory --fontsizePx 25
 ```
 
 Would apply a fontsize of `25px` to the video output.
@@ -216,7 +230,7 @@ Books-to-Videos creates a VTT captions file to accompany the video. The option `
 E.g. 
 
 ```
-npm run start -- convert /path/to/ncc.html /path/to/outputDirectory --vttSettings "align:middle position:60% vertical:rl"
+books-to-videos convert /path/to/ncc.html /path/to/outputDirectory --vttSettings "align:middle position:60% vertical:rl"
 ```
 
 Results in this type of captions file:
