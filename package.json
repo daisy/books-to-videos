@@ -33,7 +33,7 @@
     "compile": "tsc",
     "start": "node build/src/cli/index.js",
     "copy-presets": "ncp src/cli/settings build/src/cli/settings && ncp test/resources build/test/resources",
-    "test": "mocha --env dotenv_config_path=test/.env --require dotenv/config build/test/**/*.js"
+    "test": "npm run build && mocha --env dotenv_config_path=test/.env --require dotenv/config build/test/**/*.js"
   },
   "compilerOptions": {
     "types": [
