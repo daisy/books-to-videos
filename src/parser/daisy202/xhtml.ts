@@ -124,7 +124,12 @@ async function resolveMedia(elm: any, baseUrl: string): Promise<any> {
     if (elm.tagName == "img") {
         let src = elm.getAttribute("src");
         let mediaFilepath = new URL(src, "file://" + baseUrl).href;
-        mediaFilepath = mediaFilepath.replace("file://", "");
+        if (process.platform == "win32") {
+            mediaFilepath = mediaFilepath.replace("file:///", "");
+        }
+        else {
+            mediaFilepath = mediaFilepath.replace("file://", "");
+        }
         let mimetype = mime.lookup(path.extname(mediaFilepath));
         let encoding = 'base64';
         let data = await fs.readFile(mediaFilepath);
