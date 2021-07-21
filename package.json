@@ -1,6 +1,6 @@
 {
   "name": "@daisy/books-to-videos",
-  "version": "0.1.1",
+  "version": "0.1.1-alpha",
   "description": "Transform a synchronized text and audio book into a video presentation",
   "engines": {
     "node": ">=15.5.0",
