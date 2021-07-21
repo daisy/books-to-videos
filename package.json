@@ -1,6 +1,6 @@
 {
   "name": "@daisy/books-to-videos",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Transform a synchronized text and audio book into a video presentation",
   "engines": {
     "node": ">=15.5.0",
@@ -25,14 +25,13 @@
     "url": "https://github.com/daisy/books-to-videos/issues"
   },
   "license": "MIT",
-  "main": "build/src/cli/index.js",
   "bin": "build/src/cli/index.js",
   "type": "module",
   "scripts": {
     "build": "npm run clean && npm run compile && npm run copy-presets",
     "clean": "rimraf -rf ./build",
     "compile": "tsc",
-    "start": "node --experimental-specifier-resolution=node build/src/cli/index.js",
+    "start": "node build/src/cli/index.js",
     "copy-presets": "ncp src/cli/settings build/src/cli/settings && ncp test/resources build/test/resources",
     "test": "mocha --env dotenv_config_path=test/.env --require dotenv/config build/test/**/*.js"
   },
