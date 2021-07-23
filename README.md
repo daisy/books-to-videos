@@ -1,10 +1,9 @@
 # Books to Videos
-[![Version](https://img.shields.io/npm/@daisy/books-to-videos.svg)](https://www.npmjs.com/package/@daisy/books-to-videos)
+[![Version](https://img.shields.io/npm/v/@daisy/books-to-videos.svg)](https://www.npmjs.com/package/@daisy/books-to-videos)
 [![Build Status](https://travis-ci.com/daisy/books-to-videos.svg?branch=main)](https://travis-ci.com/daisy/books-to-videos)
-[![Downloads](https://img.shields.io/npm/@daisy/books-to-videos)](https://www.npmjs.com/package/@daisy/books-to-videos)  
+[![Downloads](https://img.shields.io/npm/dm/@daisy/books-to-videos.svg)](https://www.npmjs.com/package/@daisy/books-to-videos)  
 [![Open Bugs](https://img.shields.io/github/issues-raw/daisy/books-to-videos/bug.svg)](https://github.com/daisy/books-to-videos/issues)
 [![License](https://img.shields.io/npm/l/@daisy/books-to-videos.svg)](LICENSE.md)
-
 
 Convert a synchronized text/audio book to a video displaying text and audio.
 
