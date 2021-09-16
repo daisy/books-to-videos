@@ -60,8 +60,19 @@ async function analyzeHtmlElements(filename: string, segments: Array<types.Media
             cleanUpElement(element);
             // @ts-ignore
             let tagname = element.tagName;
+
+            let textContent;
             // @ts-ignore
-            let textContent = tagname == "img" ? element.getAttribute("alt") : element.textContent;
+            if (element.textContent?.trim() != '') {
+                // @ts-ignore
+                textContent = element.textContent;
+            }
+            else {
+                textContent = getAltText(element);
+                if (textContent != '') {
+                    tagname = "img"; // if the alt text worked, it's basically an image
+                }
+            }
 
             await resolveMedia(element, filename);
             let textHasUrls = getUrls(textContent).size > 0;
@@ -170,5 +181,25 @@ function replaceElements(fileContents) {
     fileContents_ = fileContents_.replace(regexpEndTag, '</span');
     return fileContents_;
 
+}
+
+// gets potentially nested alt text, e.g. <p id="smil-points-here"><span><img></span></p>
+function getAltText(elm) {
+    if (elm.tagName == "img") {
+        return elm.getAttribute("alt");
+    }
+    else {
+        if (elm.childNodes) {
+            let altTexts = Array.from(elm.childNodes)
+                // @ts-ignore
+                .filter(child => child.nodeType == elm.ELEMENT_NODE)
+                .map(child => getAltText(child))
+                .join(", ");
+            return altTexts;
+        }
+        else {
+            return "";
+        }
+    }
 }
 export { parse };
