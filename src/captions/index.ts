@@ -19,7 +19,7 @@ async function generateCaptions(book: types.Book, settings: types.Settings, outD
         startTime += mediaSegment.durOnDisk;
     });
 
-    let outFilename = path.resolve(outDirname, book.metadata.title + ".vtt");
+    let outFilename = path.resolve(outDirname, book.safeFilename + ".vtt");
     await fs.writeFile(outFilename, v.toString());
     winston.info(`Done generating captions`);
     return outFilename;
