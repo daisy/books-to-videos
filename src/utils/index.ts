@@ -75,6 +75,10 @@ function getMediaSegmentsSubset(book: types.Book, options: types.Settings) {
         let numItems = options.numPreviewSlides == -1 ? allMediaSegments.length : options.numPreviewSlides;
         allMediaSegments = allMediaSegments.slice(0, numItems);
     }
+
+    // filter out media segments with no audio
+    allMediaSegments = allMediaSegments.filter(mediaSegment => mediaSegment.audios == undefined || mediaSegment.audios.length > 0);
+
     return allMediaSegments;
 }
 
